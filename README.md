@@ -1,1 +1,1 @@
-# ProjetMI6D
+# MI6D
