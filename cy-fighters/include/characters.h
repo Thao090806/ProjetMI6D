@@ -1,11 +1,12 @@
-#ifndef CHARACTERS_H  // Vérifie si CHARACTERS_H n'est pas défini
-#define CHARACTERS_H  // Définit CHARACTERS_H
+#ifndef __CHARACTERS_H__ 
+#define __CHARACTERS_H__  
+
 #define MAX_SKILLS 3
 #define MAX_MEMBRES 3
 #define MAX_EFFETS 5
 
 typedef struct {
-    char nom[30]; 
+    char nom[30];
     int valeur;
     char description[100];
     int nombre_tours_actifs;
@@ -37,4 +38,4 @@ typedef struct {
     int nb_membres;
 } Teams;
 
-#endif  // Fin de la garde d'inclusion
+#endif  

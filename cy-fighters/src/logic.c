@@ -1,5 +1,6 @@
-#ifndef __CHARACTERS_H__
-#define __CHARACTERS_H__
+#ifndef CHARACTERS_H
+#define CHARACTERS_H
+
 #include "../data/init.h"
 
 /*

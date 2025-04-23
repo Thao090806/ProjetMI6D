@@ -1,5 +1,5 @@
-#ifndef INIT_H
-#define INIT_H
+#ifndef __INIT_H__
+#define __INIT_H__
 #include "../include/characters.h"
 
 Fighters init_fighter(char *nom, int pv_max, int attaque, int defense, int agilite, int vitesse) {
