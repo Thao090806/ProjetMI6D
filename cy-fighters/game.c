@@ -13,10 +13,16 @@
     init.h : contient la fonction d'initialisation des personnages et de l'équipe.
  */
 
+#define MAX_FIGHTERS 6 // Nombre maximum de personnages
+
 int main(){
     printf("Bienvenue dans Cy-Fighters !\n");
     printf("Le jeu commence !\n");
-    printf("Vous allez affronter un adversaire !\n");
+
+    Fighters fighters[MAX_FIGHTERS]; // Tableau de personnages
+    init(fighters);
+    int choix = select_fighter(fighters, MAX_FIGHTERS);
+    printf("Vous avez choisi : %s\n", fighters[choix].nom);
   
     return 0;
 }
