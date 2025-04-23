@@ -1,3 +1,6 @@
+#include
+
+
 typedef struct {
     char nom[30];
     float hp_coutant;
@@ -7,7 +10,7 @@ typedef struct {
     int agilite;
     int speed;
     Techniques techniques
-}fighters;
+}Fighters;
 
 
 typedef struct{
@@ -19,7 +22,7 @@ typedef struct{
 }Techniques;
 
 typedef struct {
-   char *nom;
+   char nom[30];
    int nb_combattants;
    Fighters fighters; 
 }Equipe;
