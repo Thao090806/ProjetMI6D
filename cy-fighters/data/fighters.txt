@@ -1,7 +1,0 @@
-#nom             	pv_max	atk	dfs	agilité	speed
-Satoru Gojo     	150   	40 	30 	35    	45
-Yuji Itadori    	120   	35 	25 	30    	40
-Megumi Fushigoro	110   	28 	35 	30    	38
-Nobara Kugisaki 	100   	30 	20 	35    	42
-Ryomen Sukuna   	180   	50 	40 	20    	30
-Maki Zenin      	130   	38 	28 	33    	37
