@@ -9,7 +9,8 @@
 /*
     Inclusion indirecte de characters.h et init.h.
     characters.h : contient la structure des personnages leurs compétences et les equipes.
-    init.h : contient la fonction d'initialisation des personnages et de l'équipe.
+    initialisation.h : contient la fonction d'initialisation des personnages et de l'équipe.
+    logic.c : contient la logique du jeu, les fonctions de combat et de gestion des personnages.
  */
 
 int main(){

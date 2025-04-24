@@ -1,0 +1,6 @@
+git clone https://github.com/Thao090806/ProjetMI6D.git
+git add .
+git status
+git commit -m "x"
+git push origin main
+git pull origin main

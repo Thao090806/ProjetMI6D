@@ -1,26 +1,27 @@
-#ifndef __CHARACTERS_H__ 
-#define __CHARACTERS_H__  
+#ifndef CHARACTERS_H 
+#define CHARACTERS_H  
 
+#define MAX_FIGHTERS 6
 #define MAX_SKILLS 3
 #define MAX_MEMBRES 3
 #define MAX_EFFETS 5
 
 typedef struct {
-    char nom[30];
-    int valeur;
-    char description[100];
-    int nombre_tours_actifs;
-    int cooldown;
+    char nom[35];
+    char description[150];
+    int coefficient;
+    int tours_actifs;
+    int tours_recharge;
 } Skills;
 
 typedef struct {
     Skills *skills;
     int tours_restants;
-} Effetspecial;
+} Effects;
 
 typedef struct {
-    char nom[30];
-    char description[100];
+    char nom[35];
+    char description[150];
     int pv_max;
     int pv_courant;
     int attaque;
@@ -29,8 +30,8 @@ typedef struct {
     int vitesse;
     Skills skills[MAX_SKILLS];
     int nb_skills;
-    Effetspecial effet[MAX_EFFETS];
-    int nb_effets;
+    Effects effects[MAX_EFFETS];
+    int nb_effects;
 } Fighters;
 
 typedef struct {
