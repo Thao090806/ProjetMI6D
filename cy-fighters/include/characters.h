@@ -20,6 +20,7 @@ typedef struct {
 
 typedef struct {
     char nom[30];
+    char description[100];
     int pv_max;
     int pv_courant;
     int attaque;
