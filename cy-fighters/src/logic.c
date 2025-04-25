@@ -13,22 +13,11 @@
         
     */
 
-    // 1. Le Sans-eclat
     fighters[0] = init_fighter("Le Sans-eclat", "Un guerrier errant, porteur d'un destin incertain, mais d'une volonte inebranlable", 8, 7, 7, 6, 6);
-
-    // 2. Malenia, Lame de Miquella
     fighters[1] = init_fighter("Malenia", "Une epeiste legendaire, incarnation de la grace et de la mort, redoutable mais fragile", 6, 9, 5, 10, 8);
-
-    // 3. Godfrey, Premier Seigneur
     fighters[2] = init_fighter("Godfrey", "Un guerrier imposant, incarnation de la force brute et de la determination", 10, 9, 8, 5, 4);
-
-    // 4. Ranni la Sorciere
     fighters[3] = init_fighter("Ranni", "Une sorciere enigmatique, gardienne des secrets des astres et des ombres", 5, 10, 4, 7, 5);
-
-    // 5. Mohg, Seigneur du Sang
     fighters[4] = init_fighter("Mohg", "Un prince maudit, maitre des flammes sanglantes et des rituels interdits", 9, 8, 6, 6, 5);
-
-    // 6. Morgott, Roi des Omen
     fighters[5] = init_fighter("Morgott", "Un roi maudit, dernier rempart d'un royaume dechire par la decadence", 7, 8, 8, 5, 6);
 }
 
