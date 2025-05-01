@@ -35,7 +35,7 @@ typedef struct {
 } Fighters;
 
 typedef struct {
-    char *nom;
+    char nom[35];
     Fighters fighters[MAX_MEMBRES];
     int nb_membres;
 } Teams;

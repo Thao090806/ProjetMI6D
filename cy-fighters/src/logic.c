@@ -94,6 +94,47 @@ int show_fighters(Fighters fighters[],  int nb_fighter) {
     return nb_fighter;
 }
 
+void select_team(Fighters fighters[], int nb_fighters, Teams *team) {
+    /*
+        Permet au joueur de sélectionner une équipe de 3 personnages parmi les 6 disponibles.
+    */
+    printf("--- Sélection de l'équipe ---\n");
+    printf("Entrez le nom de votre équipe : ");
+    scanf("%s", (*team).nom); // Lecture du nom de l'équipe
+    printf("Le nom de votre equipe est : %s\n", (*team).nom);
+
+    int selected_indices[MAX_MEMBRES] = {-1, -1, -1}; // Stocke les indices des personnages sélectionnés
+    for (int i = 0; i < MAX_MEMBRES; i++) {
+        printf("\nChoisissez le personnage %d/%d pour votre équipe :\n", i + 1, MAX_MEMBRES);
+        int fighter_index = select_fighter(fighters, nb_fighters);
+
+        // Vérifier si le personnage est déjà sélectionné
+        int selected = 0;
+        for (int j = 0; j < i; j++) {
+            if (selected_indices[j] == fighter_index) {
+                selected = 1;
+                break;
+            }
+        }
+
+        if (selected == 1) {
+            printf("Ce personnage est déjà dans votre équipe. Veuillez en choisir un autre.\n");
+            i--; // Refaire la sélection pour ce tour
+        } else {
+            selected_indices[i] = fighter_index;
+            (*team).fighters[i] = fighters[fighter_index]; // Ajouter le personnage à l'équipe
+            (*team).nb_membres++; // Incrémenter le nombre de membres de l'équipe
+            printf("%s a été ajouté à votre équipe.\n", fighters[fighter_index].nom);
+        }
+    }
+
+    printf("\nVotre équipe est prête :\n");
+    for (int i = 0; i < MAX_MEMBRES; i++) {
+        printf("- %s\n", (*team).fighters[i].nom);
+    }
+}
+
+
 int select_fighter(Fighters fighters[], int nb_fighters) {
     /*
     Sélectionne un personnage parmi les personnages disponibles.
@@ -116,6 +157,41 @@ int select_fighter(Fighters fighters[], int nb_fighters) {
     printf("Vous avez choisi %s !\n", fighters[choix].nom);
     return choix; // Retourne l'index du personnage sélectionné
 }
+
+int select_skill(Fighters fighters[], int fighter_index) {
+    /*
+        Sélectionne une compétence parmi les compétences du personnage sélectionné.
+        Renvoie l'index de la compétence sélectionnée.
+    */
+    int choix = -1; // Initialisation de choix à une valeur invalide
+
+    while (1) { // Boucle infinie pour gérer les entrées invalides
+        printf("Choisissez votre competence (0-%d) : ", fighters[fighter_index].nb_skills - 1);
+        if (scanf("%d", &choix) == 1 && choix >= 0 && choix < fighters[fighter_index].nb_skills) {
+            break;
+        } else {
+            printf("Choix invalide. Veuillez entrer un nombre entre 0 et %d.\n", fighters[fighter_index].nb_skills - 1);
+            while (getchar() != '\n'); // Nettoyer le buffer d'entrée
+        }
+    }
+
+    printf("Vous avez choisi la competence %s !\n", fighters[fighter_index].skills[choix].nom);
+    return choix; // Retourne l'index de la compétence sélectionnée
+}
+
+void attack_target(Fighters *attacker, Fighters *target, int skill_index) {
+    /*
+        Effectue une attaque d'un personnage sur un autre.
+        Calcule les dégâts infligés en fonction de l'attaque et de la défense.
+    */
+    int degats = (*attacker).skills[skill_index].coefficient - (*target).defense; // Calcul des dégâts
+    if (degats < 0) {
+        degats = 0; // Les dégâts ne peuvent pas être négatifs
+    }
+    (*target).pv_courant -= degats; // Réduction des points de vie de la cible
+    printf("%s attaque %s avec %s et inflige %d degats !\n", (*attacker).nom, (*target).nom, (*attacker).skills[skill_index].nom, degats);
+}
+
     
 void game() {
     /*
@@ -125,10 +201,67 @@ void game() {
         et permet au joueur de sélectionner un personnage.
     */
     Fighters fighters[MAX_FIGHTERS]; // Allocation d'un tableau de personnages
+    Teams player_team; // Création d'une équipe pour le joueur
+    Teams enemy_team; // Création d'une équipe pour l'ennemi 
     init_fighters(fighters); // Initialisation des personnages
     init_skills(fighters);  // Initialisation des compétences
+
+    printf("---Debut du jeu---\n");
+    printf("Bienvenue dans CY-FIGHTERS !\n");
+
     show_fighters(fighters, MAX_FIGHTERS); // Affichage des personnages disponibles
-    select_fighter(fighters, MAX_FIGHTERS); // Sélection du personnage par le joueur
+    // Sélection de l'équipe du joueur
+    select_team(fighters, MAX_FIGHTERS, &player_team);
+
+    // Création de l'équipe adverse (prédéfinie ou aléatoire)
+    strcpy(enemy_team.nom, "Adversaires");
+    for (int i = 0; i < MAX_MEMBRES; i++) {
+        enemy_team.fighters[i] = fighters[(i + 3) % MAX_FIGHTERS]; // Exemple : sélection des 3 derniers personnages
+    }
+    printf("\nL'équipe adverse est composée de :\n");
+    for (int i = 0; i < MAX_MEMBRES; i++) {
+        printf("- %s\n", enemy_team.fighters[i].nom);
+    }
+    // Boucle principale du jeu
+    int turn = 0; // 0 pour le joueur, 1 pour l'équipe adverse
+    while (1) {
+        printf("\n--- Tour %s ---\n", turn == 0 ? "du joueur" : "de l'équipe adverse");
+
+        if (turn == 0) {
+            // Tour du joueur
+            printf("Choisissez un personnage de votre équipe pour attaquer :\n");
+            int player_index = select_fighter(player_team.fighters, MAX_MEMBRES);
+            Fighters *player = &player_team.fighters[player_index];
+
+            // Sélection de la compétence
+            int skill_index = select_skill(player_team.fighters, player_index);
+
+            // Sélection de la cible
+            printf("\nChoisissez une cible parmi l'équipe adverse :\n");
+            int target_index = select_fighter(enemy_team.fighters, MAX_MEMBRES);
+            Fighters *target = &enemy_team.fighters[target_index];
+
+            // Effectuer l'attaque
+            attack_target(player, target, skill_index);
+        } 
+        else {
+            // Tour de l'équipe adverse
+            int enemy_index = rand() % MAX_MEMBRES; // Sélection aléatoire d'un personnage
+            Fighters *enemy = &enemy_team.fighters[enemy_index];
+
+            // Sélection aléatoire d'une compétence
+            int skill_index = rand() % enemy->nb_skills;
+
+            // Sélection aléatoire d'une cible
+            int target_index = rand() % MAX_MEMBRES;
+            Fighters *target = &player_team.fighters[target_index];
+
+            // Effectuer l'attaque
+            attack_target(enemy, target, skill_index);
+    
+    }
+    // Changer de tour
+    turn = 1 - turn;
 }
 
 
