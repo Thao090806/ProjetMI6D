@@ -298,7 +298,7 @@ void start() {
     Teams enemy_team; 
     
     
-    initialisation_fighters(fighters); 
+    inisialitation_fighters(fighters); 
     inisialitation_skills(fighters);  
 
     load(fighters, player_team, enemy_team); 
