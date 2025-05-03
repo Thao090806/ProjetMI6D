@@ -5,6 +5,7 @@
 #define MAX_SKILLS 3
 #define MAX_MEMBRES 3
 #define MAX_EFFETS 5
+#define MAX_CARATERES 200
 
 typedef struct {
     char nom[35];
@@ -35,7 +36,7 @@ typedef struct {
 } Fighters;
 
 typedef struct {
-    char nom[35];
+    char *nom;
     Fighters fighters[MAX_MEMBRES];
     int nb_membres;
 } Teams;
