@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#include "src\logic.o" 
+#include "src/logic.o" 
 
 int main(){
 

@@ -1,17 +1,38 @@
 #ifndef LOGIC_H
 #define LOGIC_H
 
-#include "../data/initialisation.h"
+#include "../include/characters.h"
 
-/*
-    Inclusion indirecte de characters.h.
-    characters.h : contient la structure des personnages leurs compétences et les equipes.
- */
+Fighters init_fighter(char *nom, char *description, int pv_max, int attaque, int defense, int agilite, int vitesse) {
+    Fighters fighter;
 
- void inisialitation_fighters(Fighters fighters[]) {
-    /*
-        
-    */
+    strcpy(fighter.nom, nom);
+    strcpy(fighter.description, description);
+    fighter.pv_max = pv_max;
+    fighter.pv_courant = pv_max;
+    fighter.attaque = attaque;
+    fighter.defense = defense;
+    fighter.agilite = agilite;
+    fighter.vitesse = vitesse;
+    fighter.nb_skills = 0;
+    fighter.nb_effects = 0;
+
+    return fighter;
+}
+
+Skills init_skill(char *nom, char *description, int coefficient, int tours_actifs, int tours_recharge) {
+    Skills skill;
+
+    strcpy(skill.nom, nom);
+    strcpy(skill.description, description);
+    skill.coefficient = coefficient; 
+    skill.tours_actifs = tours_actifs; 
+    skill.tours_recharge = tours_recharge; 
+
+    return skill;
+}
+
+void inisialitation_fighters(Fighters fighters[]) {
 
     fighters[0] = init_fighter("Le Sans-eclat", "Un guerrier errant, porteur d'un destin incertain, mais d'une volonte inebranlable", 8, 7, 7, 6, 6);
     fighters[1] = init_fighter("Malenia", "Une epeiste legendaire, incarnation de la grace et de la mort, redoutable mais fragile", 6, 9, 5, 10, 8);
@@ -275,24 +296,18 @@ void effect_target(Fighters fighters[], int fighter_index, int effect_index) {
 
 }
 
-int load(Fighters fighters[], Teams player_team, Teams enemy_team) {
-    /*
-        Fonction de chargement du jeu.
-        Initialise les personnages et les équipes, 
-        affiche les personnages disponibles, 
-        et permet au joueur de sélectionner un personnage.
-    */
-    int nb_fighters = show_fighters(fighters, MAX_FIGHTERS); // Affichage des personnages disponibles
-    select_team(fighters, nb_fighters, &player_team); // Sélection de l'équipe du joueur
-    select_team(fighters, nb_fighters, &enemy_team); // Sélection de l'équipe de l'ennemi
+int load(Fighters fighters[], Teams *player_team, Teams *enemy_team) {
 
-    return 0; // Retourne 0 pour indiquer que le chargement s'est bien passé
+    int nb_fighters = show_fighters(fighters, MAX_FIGHTERS);
+
+    select_team(fighters, nb_fighters, player_team);
+    select_team(fighters, nb_fighters, enemy_team);
+
+    return 0;
 }
     
 void start() {
-    /*
 
-    */
     Fighters fighters[MAX_FIGHTERS]; 
     Teams player_team; 
     Teams enemy_team; 
@@ -301,10 +316,8 @@ void start() {
     inisialitation_fighters(fighters); 
     inisialitation_skills(fighters);  
 
-    load(fighters, player_team, enemy_team); 
+    load(fighters, &player_team, &enemy_team); 
  
 }
-
-
 
 #endif
