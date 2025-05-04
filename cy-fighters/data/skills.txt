@@ -1,0 +1,107 @@
+Nom: Coup_du_vagabond
+Description: Une attaque equilibree, reflet de sa quete solitaire
+Coefficient: 0.4
+Tours actifs: 1
+Tours recharge: 0
+
+Nom: Determination
+Description: Une volonte inebranlable qui renforce temporairement l'attaque
+Coefficient: 0
+Tours actifs: 2
+Tours recharge: 3
+
+Nom: Frappe decisive
+Description: Une attaque puissante qui inflige de lourds degats à l'adversaire
+Coefficient: 0.6
+Tours actifs: 1
+Tours recharge: 3
+
+Nom: Danse de lames
+Description: Une serie d'attaques gracieuses et mortelles
+Coefficient: 0.5
+Tours actifs: 1
+Tours recharge: 0
+
+Nom: Regeneration
+Description: Une force mystique qui restaure des points de vie apres chaque attaque
+Coefficient: 0
+Tours actifs: 3
+Tours recharge: 5
+
+Nom: Lame ecarlate
+Description: Une frappe sanglante qui inflige des degats et applique un saignement
+Coefficient: 0.6
+Tours actifs: 2
+Tours recharge: 4
+
+Nom: Frappe colossale
+Description: Une attaque devastatrice qui ebranle les ennemis
+Coefficient: 0.5
+Tours actifs: 1
+Tours recharge: 0
+
+Nom: Rugissement bestial
+Description: Un cri puissant qui affaiblit les ennemis proches
+Coefficient: 0
+Tours actifs: 2
+Tours recharge: 4
+
+Nom: Ecrasement terrestre
+Description: Une attaque de zone qui inflige des degats massifs
+Coefficient: 0.7
+Tours actifs: 1
+Tours recharge: 5
+
+Nom: Etoile glaciale
+Description: Une attaque magique qui inflige des degats et ralentit l'ennemi
+Coefficient: 0.4
+Tours actifs: 1
+Tours recharge: 0
+
+Nom: Bénédiction lunaire
+Description: Augmente temporairement l'agilité et la vitesse du personnage
+Coefficient: 0
+Tours actifs: 3
+Tours recharge: 5
+
+Nom: Pluie d etoiles
+Description: Une attaque magique de zone
+Coefficient: 0.6
+Tours actifs: 1
+Tours recharge: 4
+
+Nom: Flammes sanglantes
+Description: Une attaque qui inflige des degats et applique un saignement
+Coefficient: 0.5
+Tours actifs: 1
+Tours recharge: 0
+
+Nom: Rituel interdit
+Description: Inflige des degats massifs a tous les ennemis au prix de ses propres PV
+Coefficient: 0.9
+Tours actifs: 1
+Tours recharge: 5
+
+Nom: Marque du sang
+Description: Affaiblit l'ennemi et reduit sa defense
+Coefficient: 0
+Tours actifs: 2
+Tours recharge: 4
+
+Nom: Lame sacree
+Description: Inflige des degats sacres
+Coefficient: 0.4
+Tours actifs: 1
+Tours recharge: 0
+
+Nom: Pluie de lames
+Description: Une serie d'attaques rapides
+Coefficient: 0.5
+Tours actifs: 1
+Tours recharge: 2
+
+Nom: Jugement divin
+Description: Inflige des degats massifs a tous les ennemis
+Coefficient: 0.8
+Tours actifs: 1
+Tours recharge: 5

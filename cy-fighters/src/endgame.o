@@ -1,0 +1,12 @@
+#ifndef END_O
+#define END_O
+
+#include "../include/settings.h"
+
+void endgame(Fighters fighters[], Teams team[], Teams enemy_team[]) {
+    free(fighters);
+    free(team);
+    free(enemy_team); 
+}
+
+#endif

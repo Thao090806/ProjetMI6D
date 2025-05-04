@@ -1,0 +1,53 @@
+Nom: Le Sans-eclat
+Description: Un guerrier errant, porteur d'un destin incertain, mais d'une volonte inebranlable
+PV Max: 180
+Attaque: 70
+Defense: 70
+Agilite: 60
+Vitesse: 60
+Skills: Coup_du_vagabond, Determination, Riposte
+
+Nom: Malenia
+Description: Une epeiste legendaire, incarnation de la grace et de la mort, redoutable mais fragile
+PV Max: 160
+Attaque: 90
+Defense: 50
+Agilite: 100
+Vitesse: 80
+Skills: Danse_de_lames, Regeneration, Lame_ecarlate
+
+Nom: Godfrey
+Description: Un guerrier imposant, incarnation de la force brute et de la determination
+PV Max: 200
+Attaque: 90
+Defense: 80
+Agilite: 50
+Vitesse: 40
+Skills: Frappe_colossale, Rugissement_bestial, Ecrasement_terrestre
+
+Nom: Ranni
+Description: Une sorciere enigmatique, gardienne des secrets des astres et des ombres
+PV Max: 150
+Attaque: 100
+Defense: 40
+Agilite: 70
+Vitesse: 50
+Skills: Etoile_glaciale, Invocation_spectrale, Pluie_d_etoiles
+
+Nom: Mohg
+Description: Un prince maudit, maitre des flammes sanglantes et des rituels interdits
+PV Max: 190
+Attaque: 80
+Defense: 60
+Agilite: 60
+Vitesse: 50
+Skills: Flammes_sanglantes, Rituel_interdit, Marque_du_sang
+
+Nom: Morgott
+Description: Un roi maudit, dernier rempart d'un royaume dechire par la decadence
+PV Max: 170
+Attaque: 80
+Defense: 80
+Agilite: 50
+Vitesse: 60
+Skills: Lame_sacree, Pluie_de_lames, Jugement_divin

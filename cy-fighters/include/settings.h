@@ -1,11 +1,12 @@
-#ifndef CHARACTERS_H 
-#define CHARACTERS_H  
+#ifndef SETTINGS_H 
+#define SETTINGS_H  
 
-#define MAX_FIGHTERS 6
+#define MAX_ENTITYS 6
 #define MAX_SKILLS 3
 #define MAX_MEMBRES 3
 #define MAX_EFFETS 5
-#define MAX_CARATERES 200
+#define MAX_FILES 2000
+#define MAX_CARATERES 1000
 
 typedef struct {
     char nom[35];

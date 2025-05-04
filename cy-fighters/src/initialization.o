@@ -1,0 +1,140 @@
+#ifndef INITIALIZATION_C
+#define INITIALIZATION_C
+
+#include <stdio.h>
+#include "../include/settings.h"
+
+
+Fighters inisialization_fighter(char *nom, char *description, int pv_max, int attaque, int defense, int agilite, int vitesse) {
+    Fighters fighter;
+
+    strcpy(fighter.nom, nom);
+    strcpy(fighter.description, description);
+    fighter.pv_max = pv_max;
+    fighter.pv_courant = pv_max;
+    fighter.attaque = attaque;
+    fighter.defense = defense;
+    fighter.agilite = agilite;
+    fighter.vitesse = vitesse;
+    fighter.nb_skills = 0;
+    fighter.nb_effects = 0;
+
+    return fighter;
+}
+
+Skills inisialization_skill(char *nom, char *description, int coefficient, int tours_actifs, int tours_recharge) {
+    Skills skill;
+
+    strcpy(skill.nom, nom);
+    strcpy(skill.description, description);
+    skill.coefficient = coefficient; 
+    skill.tours_actifs = tours_actifs; 
+    skill.tours_recharge = tours_recharge; 
+
+    return skill;
+}
+
+void fighters(Fighters fighters[]) {
+    char source[MAX_CARATERES] = "data/fighters.txt";
+    FILE *file = fopen(source, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", source);
+        exit(2);
+    }
+    char line[MAX_FILES];
+    int index = 0;
+    
+    // La boucle continue tant qu'il y a des lignes à lire.
+    while(fgets(line, sizeof(line), file)){
+        // Si la ligne commence par "Nom:", cela indique le début des informations d'un combattant.
+        if (strncmp(line, "Nom:", 4) == 0) {
+            
+            char nom[MAX_CARATERES], description[MAX_CARATERES];
+            int pv_max, attaque, defense, agilite, vitesse;
+            // Lire le nom
+            sscanf(line, "Nom: %[^\n]", nom);
+            // Lire la description
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Description: %[^\n]", description);
+            // Lire les statistiques
+            fgets(line, sizeof(line), file);
+            sscanf(line, "PV Max: %d", &pv_max);
+
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Attaque: %d", &attaque);
+
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Defense: %d", &defense);
+
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Agilite: %d", &agilite);
+
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Vitesse: %d", &vitesse);
+            // Initialiser le combattant
+            fighters[index] = inisialization_fighter(nom, description, pv_max, attaque, defense, agilite, vitesse);
+            index++;
+
+            if (index >= MAX_MEMBRES) {
+                break; // Éviter de dépasser la limite des combattants
+            }
+
+        }
+    }
+    fclose(file);
+}
+
+void skills(Fighters fighters[]) {
+    char source[MAX_CARATERES] = "data/skills.txt";
+    FILE *file = fopen(source, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s\n", source);
+        exit(3);
+    }
+    char line[MAX_FILES];
+    int index = 0;
+    
+    // La boucle continue tant qu'il y a des lignes à lire.
+    while(fgets(line, sizeof(line), file)){
+        // Si la ligne commence par "Nom:", cela indique le début des informations d'une compétence.
+        if (strncmp(line, "Nom:", 4) == 0) {
+            
+            char nom[MAX_CARATERES];
+            char description[MAX_FILES];
+            int coefficient, tours_actifs, tours_recharge;
+            // Lire le nom
+            sscanf(line, "Nom: %[^\n]", nom);
+            // Lire la description
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Description: %[^\n]", description);
+            // Lire les statistiques
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Coefficient: %d", &coefficient);
+
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Tours Actifs: %d", &tours_actifs);
+
+            fgets(line, sizeof(line), file);
+            sscanf(line, "Tours Recharge: %d", &tours_recharge);
+            
+            // Initialiser la compétence
+            fighters[index].skills[fighters[index].nb_skills] = inisialization_skill(nom, description, coefficient, tours_actifs, tours_recharge);
+            fighters[index].nb_skills++;
+
+            if (fighters[index].nb_skills >= MAX_SKILLS) {
+                break; // Éviter de dépasser la limite des compétences
+            }
+
+        }
+    }
+    fclose(file);
+}
+
+void inisialization(Fighters entity[]) {
+    
+    fighters(entity); 
+    skills(entity);  
+ 
+}
+
+#endif 
