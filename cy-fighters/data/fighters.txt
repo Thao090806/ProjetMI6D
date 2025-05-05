@@ -2,7 +2,7 @@ Nom; Le Sans-eclat
 Description; Un guerrier errant, porteur d'un destin incertain, mais d'une volonte inebranlable.
 Point de vie max; 180
 Attaque; 70
-Defense; 70
+Defense; 35
 Agilite; 60
 Vitesse; 60
 Skills; Coup du vagabond, Determination, Riposte
@@ -11,7 +11,7 @@ Nom; Malenia
 Description; Une epeiste legendaire, incarnation de la grace et de la mort, redoutable mais fragile.
 Point de vie max; 160
 Attaque; 90
-Defense; 50
+Defense; 25
 Agilite; 100
 Vitesse; 80
 Skills; Danse de lames, Regeneration, Lame ecarlate
@@ -20,7 +20,7 @@ Nom; Godfrey
 Description; Un guerrier imposant, incarnation de la force brute et de la determination.
 Point de vie max; 200
 Attaque; 90
-Defense; 80
+Defense; 40
 Agilite; 50
 Vitesse; 40
 Skills; Frappe colossale, Rugissement bestial, Ecrasement terrestre
@@ -29,7 +29,7 @@ Nom; Ranni
 Description; Une sorciere enigmatique, gardienne des secrets des astres et des ombres.
 Point de vie max; 150
 Attaque; 100
-Defense; 40
+Defense; 20
 Agilite; 70
 Vitesse; 50
 Skills; Etoile glaciale, Invocation spectrale, Pluie d etoiles
@@ -38,7 +38,7 @@ Nom; Mohg
 Description; Un prince maudit, maitre des flammes sanglantes et des rituels interdits.
 Point de vie max; 190
 Attaque; 80
-Defense; 60
+Defense; 30
 Agilite; 60
 Vitesse; 50
 Skills; Flammes sanglantes, Rituel interdit, Marque du sang
@@ -47,7 +47,7 @@ Nom; Morgott
 Description; Un roi maudit, dernier rempart d'un royaume dechire par la decadence.
 Point de vie max; 170
 Attaque; 80
-Defense; 80
+Defense; 40
 Agilite; 50
 Vitesse; 60
 Skills; Lame sacree, Pluie de lames, Jugement divin
