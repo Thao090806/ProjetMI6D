@@ -1,19 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <unistd.h>
 #include <time.h>
-#include <ctype.h>
-#include <stdbool.h>
-#include <limits.h>
-#include <wchar.h>
-#include <locale.h>
-#include <wctype.h>
-#include <fcntl.h>
-#include <io.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#include <string.h>
+#include <stdio.h>
+
+#ifdef _WIN32
+    #include <windows.h> // Windows
+#else
+    #include <unistd.h>  // Linux/macOS
+#endif
 
 #include "src/initialization.o"
 #include "src/script.o"
@@ -27,13 +22,22 @@ int main(){
     Teams entity_team[MAX_MEMBRES]; 
     Teams enemy_team[MAX_MEMBRES]; 
 
+    srand(time(NULL));
+
+    clean();
+    
+    wizard();
     inisialization(entity);
+    printf("\n");
+    wait(5);
+
+    clean();
+
 
     story();
     mode();
-    ask(3);
 
-    load(entity, entity_team, enemy_team);
+    load(entity, entity_team, enemy_team, ask(3));
 
     endgame(entity, entity_team, enemy_team);
 

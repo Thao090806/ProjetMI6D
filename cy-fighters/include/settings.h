@@ -1,10 +1,11 @@
 #ifndef SETTINGS_H 
 #define SETTINGS_H  
 
+#define MAX_TEAMS 2
 #define MAX_ENTITYS 6
 #define MAX_SKILLS 3
 #define MAX_MEMBRES 3
-#define MAX_EFFETS 5
+#define MAX_EFFETS 10
 #define MAX_NAME 35
 #define MAX_DESCRIPTION 200
 #define MAX_FILES 10000
@@ -20,7 +21,9 @@ typedef struct {
 
 typedef struct {
     Skills *skills;
+    char nom[MAX_NAME];
     int tours_restants;
+    int valeur;
 } Effects;
 
 typedef struct {

@@ -36,7 +36,7 @@ Skills inisialization_skill(char *nom, char *description, int coefficient, int t
 void fighters(Fighters fighters[]) {
 
     char source[MAX_CARATERES] = "data/fighters.txt";
-    printf("Invocation des combattants depuis %s.\n", source);
+    printf("Invocation des combattants depuis %s...\n", source);
 
     FILE *fp = fopen(source, "r");
     if (fp == NULL) {
@@ -121,7 +121,7 @@ void fighters(Fighters fighters[]) {
 void skills(Fighters fighters[]) {
 
     char source[MAX_CARATERES] = "data/skills.txt";
-    printf("Creation des competences depuis %s.\n", source);
+    printf("Creation des competences depuis %s...\n", source);
 
     FILE *fp = fopen(source, "r");
     if (fp == NULL) {

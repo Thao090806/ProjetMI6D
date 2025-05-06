@@ -1,144 +1,437 @@
 #ifndef FIGHT_O
 #define FIGHT_O
 
-#include  "initialization.o"
+#include "initialization.o"
 
-void attack_target(Fighters attacker[], Fighters target[], int skill_index,int degats) {
+void attack_target(Fighters attacker[], Fighters target[], int skill_index, int degats) {
     if (skill_index < 0 || skill_index >= MAX_SKILLS) {
-        printf("Index de compétence invalide.\n");
+        printf(
+            "\033[1;37m"
+            "Index de competence invalide."
+            "\033[0m\n"
+        );
         return;
     }
-
-    (*target).pv_courant -= degats; // Réduction des points de vie de la cible
-    printf("%s attaque %s avec %s et inflige %d degats !\n", (*attacker).nom, (*target).nom, (*attacker).skills[skill_index].nom, degats);
-    if((*target).pv_courant <= 0) {
-        printf("%s a ete vaincu !\n", (*target).nom);
-        (*target).pv_courant = 0; // Réinitialisation des PV de la cible
-    } 
-    else {
-        printf("%s a encore %d PV restants.\n", (*target).nom, (*target).pv_courant);
+    int chance_escape=(*target).agilite - (*attacker).agilite;
+    if(chance_escape>0){
+        int random_value = rand()%100;
+        if(random_value<chance_escape){
+            printf(
+                "\033[1;37m"    
+                "%s a esquivé l'attaque de %s !"
+                "\033[0m\n", (*target).nom, (*attacker).nom
+            );
+            return;
+        }   
     }
+    (*target).pv_courant -= degats; 
+    printf(
+        "\033[1;37m"
+        "%s attaque %s avec %s et inflige %d degats !"
+        "\033[0m\n", (*attacker).nom, (*target).nom, (*attacker).skills[skill_index].nom, degats
+    );
+
+    if ((*target).pv_courant <= 0) {
+        printf(
+            "\033[1;37m"
+            "%s a ete vaincu !"
+            "\033[0m\n", (*target).nom
+        );
+        (*target).pv_courant = 0; // Réinitialisation des PV de la cible
+    } else {
+        printf(
+            "\033[1;37m"
+            "%s a encore %d PV restants."
+            "\033[0m\n", (*target).nom, (*target).pv_courant
+        );
+    }
+}
+
+void apply_effect(Fighters *target,const char *effect_name,int valeur,int tours){
+    if(target== NULL || effect_name == NULL || tours <= 0){
+        printf("Erreur: cible ou nom d'effet invalide.\n");
+        return;
+    }
+    for(int i=0; i<MAX_EFFETS; i++){
+        if((*target).effects[i].tours_restants == 0){
+            strcpy((*target).effects[i].nom, effect_name);
+            (*target).effects[i].valeur = valeur;
+            (*target).effects[i].tours_restants = tours;
+            printf(
+                "\033[1;37m"
+                "%s subit l'effet %s de %d pour %d tours !"
+                "\033[0m\n", (*target).nom, effect_name, valeur, tours
+            );
+            return;
+        }
+    }
+    printf(
+            "\033[1;37m"
+            "Impossible d'appliquer l'effet %s sur %s, pas de place disponible."
+            "\033[0m\n", effect_name, (*target).nom
+    );
+    
+}
+
+void update_effects(Fighters *target) {
+    for (int i = 0; i < MAX_EFFETS; i++) {
+        if ((*target).effects[i].tours_restants > 0) {
+            // Appliquer les effets actifs
+            if (strcmp((*target).effects[i].nom, "saignement") == 0) {
+                int saignement = (*target).effects[i].valeur;
+                (*target).pv_courant -= saignement;
+                if ((*target).pv_courant < 0) {
+                    (*target).pv_courant = 0;
+                }
+                printf(
+                    "\033[1;37m"
+                    "%s perd %d PV à cause de l'effet de saignement !"
+                    "\033[0m\n", target->nom, saignement
+                );
+            }
+            if (strcmp((*target).effects[i].nom, "regeneration") == 0) {
+                int regeneration = (*target).effects[i].valeur;
+                (*target).pv_courant += regeneration;
+                if ((*target).pv_courant > (*target).pv_max) {
+                    (*target).pv_courant = (*target).pv_max;
+                }
+                printf(
+                    "\033[1;37m"
+                    "%s regagne %d PV grâce à l'effet de régénération !"
+                    "\033[0m\n", target->nom, regeneration
+                );
+            }
+            if (strcmp((*target).effects[i].nom, "bonus d'attaque") == 0) {
+                (*target).attaque += (*target).effects[i].valeur;
+            }
+            if (strcmp((*target).effects[i].nom, "reduction d'attaque") == 0) {
+                (*target).attaque -= (*target).effects[i].valeur;
+            }
+            if (strcmp((*target).effects[i].nom, "reduction de defense") == 0) {
+                (*target).defense -= (*target).effects[i].valeur;
+            }
+            if (strcmp((*target).effects[i].nom, "bonus d'agilite") == 0) {
+                (*target).agilite += (*target).effects[i].valeur;
+            }
+            if (strcmp((*target).effects[i].nom, "reduction d'agilite") == 0) {
+                (*target).agilite -= (*target).effects[i].valeur;
+            }
+            if (strcmp((*target).effects[i].nom, "bonus de vitesse") == 0) {
+                (*target).vitesse += (*target).effects[i].valeur;
+            }
+            if (strcmp((*target).effects[i].nom, "reduction de vitesse") == 0) {
+                (*target).vitesse -= (*target).effects[i].valeur;
+            }
+
+            // Réduire la durée de l'effet
+            (*target).effects[i].tours_restants--;
+            if ((*target).effects[i].tours_restants == 0) {
+                printf(
+                    "\033[1;37m"
+                    "L'effet %s sur %s a expiré !"
+                    "\033[0m\n", (*target).effects[i].nom, target->nom
+                );
+
+                // Réduire la durée de l'effet
+            (*target).effects[i].tours_restants--;
+            if ((*target).effects[i].tours_restants == 0) {
+                printf(
+                    "\033[1;37m"
+                    "L'effet %s sur %s a expiré !"
+                    "\033[0m\n", (*target).effects[i].nom, target->nom
+                );
+
+                // Réinitialiser les statistiques affectées
+                if (strcmp((*target).effects[i].nom, "bonus d'attaque") == 0) {
+                    (*target).attaque -= (*target).effects[i].valeur;
+                }
+                if (strcmp((*target).effects[i].nom, "reduction d'attaque") == 0) {
+                    (*target).attaque += (*target).effects[i].valeur;
+                }
+                if (strcmp((*target).effects[i].nom, "bonus d'agilite") == 0) {
+                    (*target).agilite -= (*target).effects[i].valeur;
+                }
+                if (strcmp((*target).effects[i].nom, "reduction d'agilite") == 0) {
+                    (*target).agilite += (*target).effects[i].valeur;
+                }
+                if (strcmp((*target).effects[i].nom, "bonus de vitesse") == 0) {
+                    (*target).vitesse -= (*target).effects[i].valeur;
+                }
+                if (strcmp((*target).effects[i].nom, "reduction de vitesse") == 0) {
+                    (*target).vitesse += (*target).effects[i].valeur;
+                }
+                if (strcmp((*target).effects[i].nom, "reduction de defense") == 0) {
+                    (*target).defense += (*target).effects[i].valeur;
+                }
+
+                // Réinitialiser l'effet
+                (*target).effects[i].nom[0] = '\0';
+                (*target).effects[i].valeur = 0;
+            }
+        }
+    }
+}
 }
 
 void effect_target(Fighters *attacker, Fighters *target, int skill_index) {
-    Skills skill=(*attacker).skills[skill_index];
-    printf("%s utilise %s sur %s !\n", (*attacker).nom, skill.nom, (*target).nom);
+    Skills skill = (*attacker).skills[skill_index];
+    printf(
+        "\033[1;37m"
+        "%s utilise %s sur %s !"
+        "\033[0m\n", (*attacker).nom, skill.nom, (*target).nom
+    );
 
-    if(strcmp(skill.nom, "coup du vagabond")==0){
+    if (strcmp(skill.nom, "Coup du vagabond") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if(degats <= 0) degats = 0; 
+        if (degats <= 0){
+            degats = 0;
+        }
         attack_target(attacker, target, skill_index, degats);
-    } 
+    }
     if (strcmp(skill.nom, "Determination") == 0) {
         int bonus = (*attacker).attaque * 0.5;
         (*attacker).attaque += bonus;
-        printf("%s augmente son attaque de %d points pour %d tours !\n", (*attacker).nom, bonus, skill.tours_actifs);
-    }  
-    if(strcmp(skill.nom, "Frappe decisive") == 0) {
+        apply_effect(attacker, "bonus d'attaque", bonus, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s augmente son attaque de %d points pour %d tours !"
+            "\033[0m\n", (*attacker).nom, bonus, skill.tours_actifs
+        );
+    }
+    if (strcmp(skill.nom, "Frappe decisive") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
+        if (degats < 0){
+            degats = 0;
+        }
         attack_target(attacker, target, skill_index, degats);
-    } 
-    if(strcmp(skill.nom, "Danse de lames") == 0) {
+    }
+    if (strcmp(skill.nom, "Danse de lames") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
-        int degats2=degats/3;
-        for(int i=0;i<3;i++){
+        if (degats < 0) {
+            degats = 0;
+        }
+        int degats2 = degats / 3;
+        for (int i = 0; i < 3; i++) {
             attack_target(attacker, target, skill_index, degats2);
         }
-    } 
-    if(strcmp(skill.nom, "Regeneration") == 0) {
+    }
+    if (strcmp(skill.nom, "Regeneration") == 0) {
         int heal = (*attacker).pv_max * 0.2;
         (*attacker).pv_courant += heal;
-        if ((*attacker).pv_courant > (*attacker).pv_max){
+        if ((*attacker).pv_courant > (*attacker).pv_max) {
             (*attacker).pv_courant = (*attacker).pv_max;
-        } 
-        printf("%s restaure %d PV !\n", (*attacker).nom, heal);
-    } 
-    if(strcmp(skill.nom, "Lame ecarlate") == 0) {
-        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) {  
-        degats = 0;
-        attack_target(attacker, target, skill_index, degats);
-        printf("%s applique un effet de saignement sur %s !\n", (*attacker).nom, (*target).nom);
         }
-    
-    } 
-    if(strcmp(skill.nom, "Frappe colossale") == 0) {
+        apply_effect(attacker, "regeneration", heal, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s restaure %d PV !"
+            "\033[0m\n", (*attacker).nom, heal
+        );
+    }
+    if (strcmp(skill.nom, "Lame ecarlate") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
+        if (degats < 0){
+            degats = 0;
+        }
+        attack_target(attacker, target, skill_index, degats);
+        int saignement = (*target).pv_max * 0.1;
+        (*target).pv_courant -= saignement;
+        if ((*target).pv_courant < 0) {
+            (*target).pv_courant = 0;
+        }
+        apply_effect(target, "saignement", saignement, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s applique un effet de saignement sur %s !"
+            "\033[0m\n", (*attacker).nom, (*target).nom
+        );
+    }
+    if (strcmp(skill.nom, "Frappe colossale") == 0) {
+        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
+        if (degats < 0) {
+            degats = 0;
+        }
+        attack_target(attacker, target, skill_index, degats);
+        int reduction = (*target).agilite * 0.5;
+        (*target).agilite -= reduction;
+        apply_effect(target, "reduction d'agilite", reduction, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s reduit l'agilite de %s de %d points !"
+            "\033[0m\n", (*attacker).nom, (*target).nom, reduction
+        );
         attack_target(attacker, target, skill_index, degats);
     }
-    if(strcmp(skill.nom, "Rugissement bestial") == 0) {
-        int reduction = (*target).defense * 0.3;
-        (*target).defense -= reduction;
-        printf("%s réduit la défense de %s de %d points pour %d tours !\n", (*attacker).nom, (*target).nom, reduction, skill.tours_actifs);
+    if(strcmp(skill.nom, "Rugissement bestial")==0){
+        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
+        if (degats < 0){
+            degats = 0;
+        }
+        attack_target(attacker, target, skill_index, degats);
+        for(int i=0; i<MAX_MEMBRES; i++){
+            int reduction = target[i].attaque * 0.3;
+            target[i].attaque -= reduction;
+            apply_effect(&target[i], "reduction d'attaque", reduction, skill.tours_actifs);
+            printf(
+                "\033[1;37m"
+                "%s reduit l'attaque de %s de %d points !"
+                "\033[0m\n", (*attacker).nom, target[i].nom, reduction 
+            );
+        }
     }
     if (strcmp(skill.nom, "Ecrasement terrestre") == 0) {
-        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
-        attack_target(attacker, target, skill_index, degats);
+        for(int i = 0; i < MAX_MEMBRES; i++) {
+            int degats = (*attacker).attaque * skill.coefficient - target[i].defense;
+            if (degats < 0){
+                degats = 0;
+            }
+            attack_target(attacker, &target[i], skill_index, degats);
+        }
+        printf(
+            "\033[1;37m"
+            "%s inflige des degats de zone !"
+            "\033[0m\n", (*attacker).nom
+        );
     }
-    if(strcmp(skill.nom,"Etoile glaciale")==0){
+    if (strcmp(skill.nom, "Etoile glaciale") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if(degats <= 0) degats = 0; 
+        if (degats <= 0) {
+            degats = 0;
+        }
         attack_target(attacker, target, skill_index, degats);
         int reduction = (*target).vitesse * 0.3;
         (*target).vitesse -= reduction;
-        printf("%s réduit la vitesse de %s de %d points !\n", (*attacker).nom, (*target).nom, reduction);
+        apply_effect(target, "reduction de vitesse", reduction, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s reduit la vitesse de %s de %d points !"
+            "\033[0m\n", (*attacker).nom, (*target).nom, reduction
+        );
     }
-    if(strcmp(skill.nom,"Bénédiction lunaire")==0){
+    if (strcmp(skill.nom, "Benediction lunaire") == 0) {
         int bonus = (*attacker).agilite * 0.5;
         (*attacker).agilite += bonus;
+        apply_effect(attacker, "bonus d'agilite", bonus, skill.tours_actifs);
         int bonus_2 = (*attacker).vitesse * 0.5;
         (*attacker).vitesse += bonus_2;
-        printf("%s augmente son agilité de %d points et sa vitesse de %d points !\n", (*attacker).nom, bonus, bonus_2);
+        apply_effect(attacker, "bonus de vitesse", bonus_2, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s augmente son agilite de %d points et sa vitesse de %d points !"
+            "\033[0m\n", (*attacker).nom, bonus, bonus_2
+        );
     }
-    if(strcmp(skill.nom,"Pluie d etoiles")==0){
-        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if(degats <= 0) degats = 0; 
-        attack_target(attacker, target, skill_index, degats);
+    if (strcmp(skill.nom, "Pluie d'etoiles") == 0) {
+        for(int i = 0; i < MAX_MEMBRES; i++) {
+            int degats = (*attacker).attaque * skill.coefficient - target[i].defense;
+            if (degats < 0) {
+                degats = 0;
+            }
+            attack_target(attacker, &target[i], skill_index, degats);
+        }
+        printf(
+            "\033[1;37m"
+            "%s inflige des degats de zone !"
+            "\033[0m\n", (*attacker).nom
+        );
     }
-    if(strcmp(skill.nom,"Flammes sanglantes")==0){
+    if (strcmp(skill.nom, "Flammes sanglantes") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
+        if (degats < 0) {
+            degats = 0;
+        }
         attack_target(attacker, target, skill_index, degats);
-        printf("%s applique un effet de saignement sur %s !\n", (*attacker).nom, (*target).nom);
+        int saignement = (*target).pv_max * 0.1;
+        (*target).pv_courant -= saignement;
+        if ((*target).pv_courant < 0) {
+            (*target).pv_courant = 0;
+        }
+        apply_effect(target, "saignement", saignement, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s applique un effet de saignement sur %s !"
+            "\033[0m\n", (*attacker).nom, (*target).nom
+            );
     }
-    if(strcmp(skill.nom, "Rituel interdit") == 0){
-        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
-        attack_target(attacker, target, skill_index, degats);
+    if (strcmp(skill.nom, "Rituel interdit") == 0) {
+        for(int i = 0; i < MAX_MEMBRES; i++) {
+            int degats = (*attacker).attaque * skill.coefficient - target[i].defense;
+            if (degats < 0) {
+                degats = 0;
+            }
+            attack_target(attacker, &target[i], skill_index, degats);
+        }
+        printf(
+            "\033[1;37m"
+            "%s inflige des degats de zone !"
+            "\033[0m\n", (*attacker).nom
+        );
         int self_damage = (*attacker).pv_max * 0.2;
         (*attacker).pv_courant -= self_damage;
-        printf("%s perd %d PV en utilisant le Rituel interdit !\n", (*attacker).nom, self_damage);
-        if ((*attacker).pv_courant < 0){
+        printf(
+            "\033[1;37m"
+            "%s perd %d PV en utilisant le Rituel interdit !"
+            "\033[0m\n", (*attacker).nom, self_damage
+        );
+        if ((*attacker).pv_courant < 0) {
             (*attacker).pv_courant = 0;
-        } 
+        }
     }
-    if(strcmp(skill.nom,"Marque du sang")==0){
+    if (strcmp(skill.nom, "Marque du sang") == 0) {
         int reduction = (*target).defense * 0.3;
         (*target).defense -= reduction;
-        printf("%s réduit la défense de %s de %d points pour %d tours !\n", (*attacker).nom, (*target).nom, reduction, skill.tours_actifs);
+        apply_effect(target, "reduction de defense", reduction, skill.tours_actifs);
+        printf(
+            "\033[1;37m"
+            "%s reduit la defense de %s de %d points pour %d tours !"
+            "\033[0m\n", (*attacker).nom, (*target).nom, reduction, skill.tours_actifs
+        );
     }
-    if(strcmp(skill.nom,"Lame sacree")==0){
+    if (strcmp(skill.nom, "Lame sacree") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if(degats <= 0) degats = 0; 
+        if (degats <= 0) {
+            degats = 0;
+        }
         attack_target(attacker, target, skill_index, degats);
     }
-    if(strcmp(skill.nom,"Pluie de lames")==0){
+    if (strcmp(skill.nom, "Pluie de lames") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
-        int degats2=degats/3;
-        for(int i=0;i<3;i++){
+        if (degats < 0) {
+            degats = 0;
+        }
+        int degats2 = degats / 3;
+        for (int i = 0; i < 3; i++) {
             attack_target(attacker, target, skill_index, degats2);
         }
     }
-    if(strcmp(skill.nom, "Jugement divin") == 0) {
-        int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
-        attack_target(attacker, target, skill_index, degats);
+    if (strcmp(skill.nom, "Jugement divin") == 0) {
+        for(int i = 0; i < MAX_MEMBRES; i++) {
+            int degats = (*attacker).attaque * skill.coefficient - target[i].defense;
+            if (degats < 0) {
+                degats = 0;
+            }
+            attack_target(attacker, &target[i], skill_index, degats);
+        }
+        printf(
+            "\033[1;37m"
+            "%s inflige des degats de zone !"
+            "\033[0m\n", (*attacker).nom
+        );
+    }   
+}
+
+void speed_select(Fighters fighters[],int taille){
+    for(int i=0; i<taille; i++){
+        for(int j=i+1; j<taille; j++){
+            if(fighters[i].vitesse < fighters[j].vitesse){
+                Fighters temporary = fighters[i];
+                fighters[i] = fighters[j];
+                fighters[j] = temporary;
+            }
+        }
     }
 }
 
+void executer_tour()
 #endif
+

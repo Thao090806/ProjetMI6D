@@ -34,7 +34,7 @@ Tours recharge; 4
 
 Personnage;
 +; Frappe colossale
-Description; Une attaque devastatrice qui ebranle les ennemis
+Description; Une attaque devastatrice qui ebranle l'ennemi
 Coefficient; 1.5
 Tours actifs; 1
 Tours recharge; 0
