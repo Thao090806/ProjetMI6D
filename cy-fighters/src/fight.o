@@ -57,9 +57,12 @@ void effect_target(Fighters *attacker, Fighters *target, int skill_index) {
     } 
     if(strcmp(skill.nom, "Lame ecarlate") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
-        if (degats < 0) degats = 0;
+        if (degats < 0) {  
+        degats = 0;
         attack_target(attacker, target, skill_index, degats);
         printf("%s applique un effet de saignement sur %s !\n", (*attacker).nom, (*target).nom);
+        }
+    
     } 
     if(strcmp(skill.nom, "Frappe colossale") == 0) {
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
@@ -96,7 +99,7 @@ void effect_target(Fighters *attacker, Fighters *target, int skill_index) {
         if(degats <= 0) degats = 0; 
         attack_target(attacker, target, skill_index, degats);
     }
-    if(strcmp(skill.nom,"Flammes sanglantes"==0)){
+    if(strcmp(skill.nom,"Flammes sanglantes")==0){
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
         if (degats < 0) degats = 0;
         attack_target(attacker, target, skill_index, degats);

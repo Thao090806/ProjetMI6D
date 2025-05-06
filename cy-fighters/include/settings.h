@@ -5,12 +5,14 @@
 #define MAX_SKILLS 3
 #define MAX_MEMBRES 3
 #define MAX_EFFETS 5
-#define MAX_FILES 2000
+#define MAX_NAME 35
+#define MAX_DESCRIPTION 200
+#define MAX_FILES 10000
 #define MAX_CARATERES 1000
 
 typedef struct {
-    char nom[35];
-    char description[150];
+    char nom[MAX_NAME];
+    char description[MAX_DESCRIPTION];
     int coefficient;
     int tours_actifs;
     int tours_recharge;
@@ -22,8 +24,8 @@ typedef struct {
 } Effects;
 
 typedef struct {
-    char nom[35];
-    char description[150];
+    char nom[MAX_NAME];
+    char description[MAX_DESCRIPTION];
     int pv_max;
     int pv_courant;
     int attaque;

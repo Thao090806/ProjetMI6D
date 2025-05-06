@@ -16,6 +16,7 @@
 #include <sys/types.h>
 
 #include "src/initialization.o"
+#include "src/script.o"
 #include "src/logic.o"
 #include "src/fight.o"
 #include "src/endgame.o"
@@ -27,11 +28,16 @@ int main(){
     Teams enemy_team[MAX_MEMBRES]; 
 
     inisialization(entity);
+
+    story();
+    mode();
+    ask(3);
+
     load(entity, entity_team, enemy_team);
 
     endgame(entity, entity_team, enemy_team);
 
-    
+    printf("\n");
   
     return 0;
 }
