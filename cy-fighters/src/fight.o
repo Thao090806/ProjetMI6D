@@ -3,37 +3,17 @@
 
 #include "initialization.o"
 
-<<<<<<< HEAD
-int select_skill(Fighters fighters[], int fighter_index) {
-=======
 int select_skill(Fighters *fighters, int fighter_index) {
 
->>>>>>> df68419707caa1ba331f4693849eb1514e96f5db
     printf(
         "\033[0m"
         "\033[38;5;214m"
         "\033[3m"
-<<<<<<< HEAD
-        "%s, de quelle compétence allez-vous faire preuve ?\n"
-=======
         "%s,  de quel competence allez vous faire preuve ?\n"
->>>>>>> df68419707caa1ba331f4693849eb1514e96f5db
         "\033[0m", fighters[fighter_index].nom
     );
 
     for (int i = 0; i < fighters[fighter_index].nb_skills; i++) {
-<<<<<<< HEAD
-        printf(
-            "\033[1;37m[%d] %s\033[0m (Coefficient: %.2f)\n",
-            i, fighters[fighter_index].skills[i].nom, fighters[fighter_index].skills[i].coefficient
-        );
-    }
-
-    int choix = ask(fighters[fighter_index].nb_skills);
-    return choix;
-}
-
-=======
         if (fighters[fighter_index].reload[i] > 0) {
             printf(
                 "\033[1;31m%d ~ %s "
@@ -61,7 +41,6 @@ int select_skill(Fighters *fighters, int fighter_index) {
 
 
 
->>>>>>> df68419707caa1ba331f4693849eb1514e96f5db
 void attack_target(Fighters attacker[], Fighters target[], int skill_index, int degats) {
     if (skill_index < 0 || skill_index >= MAX_SKILLS) {
         printf(
@@ -500,58 +479,8 @@ void speed_select(Fighters fighters[],int taille){
     }
 }
 
-<<<<<<< HEAD
-void one_turn(Fighters fighters[], int nb_fighters, Fighters target[], int nb_target) {
-    if (skill_index < 0 || skill_index >= MAX_SKILLS || nb_fighters <= 0 || nb_target <= 0) {
-        printf("Choix hors de portee.\n");
-        return 1;
-    }
-
-    for (int i = 0; i < nb_fighters; i++) {
-        if (fighters[i].pv_courant > 0) { 
-            printf(
-                "\033[1;37m"
-                "C'est au tour de %s d'agir !\n"
-                "\033[0m", fighters[i].nom
-            );
-
-            printf(
-                "\n\033[1;39m"
-                "Adversaires disponibles ~\n"
-                "\033[0m"
-            );
-
-            // Afficher les adversaires disponibles
-            for (int j = 0; j < nb_target; j++) {
-                if (target[j].pv_courant > 0) {
-                    printf(
-                        "[%d] %s (PV: %d)\n", j, target[j].nom, target[j].pv_courant
-                    );
-                }
-            }
-
-            // Utiliser ask() pour choisir une cible valide
-            printf(
-                "\n\033[1;39m"
-                "Choisissez une cible."
-                "\033[0m\n"
-            );
-            int choix = ask(nb_target);
-
-            // Effectuer l'action sur la cible choisie
-            effect_target(&fighters[i], &target[choix], skill_index);
-
-            // Mettre à jour les effets actifs pour le combattant
-            update_effects(&fighters[i]);
-        }
-    }
-}
-
-#endif
-=======
 void executer_tour(Fighters *attacker, Fighters enemy_team[], int nb_enemies) {
     printf("\033[1;37mDébut du tour de %s !\033[0m\n", (*attacker).nom);
->>>>>>> df68419707caa1ba331f4693849eb1514e96f5db
 
     // Vérifier si l'attaquant est encore en vie
     if ((*attacker).pv_courant <= 0) {
