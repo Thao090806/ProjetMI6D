@@ -37,6 +37,7 @@ typedef struct {
     int vitesse;
     Skills skills[MAX_SKILLS];
     int nb_skills;
+    int reload[MAX_SKILLS];
     Effects effects[MAX_EFFETS];
     int nb_effects;
 } Fighters;
