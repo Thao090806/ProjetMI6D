@@ -76,4 +76,21 @@ void cauldron() {
     );
 }
 
+void speech() { 
+    wizard();
+    printf(
+        "\033[1;40m"
+        "\"Guerriers, ecoutez les battements de la terre sous vos pas...\"\n"
+        "\"Car elle se souviendra de ce jour, de vos noms, de vos actes.\"\n"
+        "\"L'arene devant vous n'est point un simple champ de bataille :\"\n"
+        "\"c'est un sanctuaire d'honneur, de courage, et de destinee.\"\n"
+        "\"Chacun de vous porte en lui les espoirs de ceux qui ne peuvent se battre.\"\n"
+        "\"Avancez avec dignite, frappez avec justesse, et tombez, s'il le faut, avec grandeur.\"\n"
+        "\"Le sang verse ici n'est pas vain - il scelle le pacte entre le heros et la legende.\"\n"
+        "\"Que votre lame soit verite, et votre coeur, inebranlable. Que commence l'epreuve.\"\n"
+        "\033[0m"
+    );
+}
+
+
 #endif
