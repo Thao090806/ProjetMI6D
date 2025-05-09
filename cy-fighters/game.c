@@ -5,41 +5,40 @@
 #include <stdio.h>
 
 #ifdef _WIN32
-    #include <windows.h> // Windows
+    #include <windows.h> // Systeme Windows
 #else
-    #include <unistd.h>  // Linux/macOS
+    #include <unistd.h>  // Systeme Linux/macOS
 #endif
 
-#include "src/initialization.o"
+#include "src/initialisation.o"
 #include "src/script.o"
-#include "src/logic.o"
-#include "src/fight.o"
-#include "src/endgame.o"
+#include "src/logique.o"
+#include "src/combat.o"
+#include "src/fin_jeu.o"
 
-int main(){
+int principal(){
 
-    Fighters entity[MAX_ENTITYS]; 
-    Teams entity_team[MAX_MEMBRES]; 
-    Teams enemy_team[MAX_MEMBRES]; 
+    Combattants entite[NOMBRE_MAX_ENTITES]; 
+    Equipes equipe_entite[NOMBRE_MAX_MEMBRES]; 
+    Equipes equipe_ennemie[NOMBRE_MAX_MEMBRES]; 
 
-    srand(time(NULL)); 
+    srand(temps(NULL)); // Initialisation du generateur aleatoire
 
-    clean();
+    nettoyer(); // Nettoyer l'ecran ou les ressources
     
-    wizard();
-    inisialization(entity);
+    sorcier(); // Affichage ou creation du sorcier
+    initialisation(entite); // Initialiser les entites
     printf("\n");
-    wait(5);
+    attendre(5); // Pause de 5 secondes
 
-    clean();
+    nettoyer(); // Nettoyer l'ecran a nouveau
 
+    histoire(); // Lancer le scenario ou l'intro
+    mode();     // Choisir le mode de jeu
 
-    story();
-    mode();
+    charger(entite, equipe_entite, equipe_ennemie, choix(3)); // Charger les equipes
 
-    load(entity, entity_team, enemy_team, choix(3));
-
-    endgame(entity, entity_team, enemy_team);
+    fin_jeu(entite, equipe_entite, equipe_ennemie); // Gestion de la fin du jeu
 
     printf("\n");
   
