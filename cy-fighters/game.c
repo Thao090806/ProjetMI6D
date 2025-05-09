@@ -37,7 +37,7 @@ int main(){
     story();
     mode();
 
-    load(entity, entity_team, enemy_team, ask(3));
+    load(entity, entity_team, enemy_team, choix(3));
 
     endgame(entity, entity_team, enemy_team);
 

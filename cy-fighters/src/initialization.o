@@ -15,6 +15,9 @@ Fighters inisialization_fighter(char *nom, char *description, int pv_max, int at
     fighter.defense = defense;
     fighter.agilite = agilite;
     fighter.vitesse = vitesse;
+    for (int i = 0; i < MAX_SKILLS; i++) {
+        fighter.reload[i] = 0;
+    }
     fighter.nb_skills = 0;
     fighter.nb_effects = 0;
 
@@ -175,6 +178,7 @@ void skills(Fighters fighters[]) {
                 }
 
                 fighters[index].skills[i] = inisialization_skill(nom, description, coefficient, tours_actifs, tours_recharge);
+                fighters[index].reload[i] = 0;
                 fighters[index].nb_skills++;
             }
 

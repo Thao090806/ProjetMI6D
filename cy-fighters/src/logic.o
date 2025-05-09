@@ -54,7 +54,7 @@ int show_fighters(Fighters fighters[], int nb_fighter) {
 }
 
 int select_fighter(int nb_fighters) {
-    return ask(nb_fighters);
+    return choix(nb_fighters);
 }
 
 void select_team(Fighters fighters[], int nb_fighters, Teams team[]) {
