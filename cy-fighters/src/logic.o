@@ -5,7 +5,7 @@
 #include "fight.o"
 #include "script.o"
 
-void wait(int seconds) {
+void attendre(int seconds) {
     #ifdef _WIN32
         Sleep(seconds * 1000); // Conversion en millisecondes pour Windows
     #else
@@ -13,7 +13,7 @@ void wait(int seconds) {
     #endif
 }
 
-void clean() {
+void nettoyage() {
     #ifdef _WIN32
         system("cls");
     #else
@@ -21,7 +21,7 @@ void clean() {
     #endif
 }
 
-int show_fighters(Fighters fighters[], int nb_fighter) {
+int affiche_fighters(Fighters fighters[], int nb_fighter) {
 
     if (nb_fighter <= 0) {
         exit(3);
@@ -53,7 +53,7 @@ int show_fighters(Fighters fighters[], int nb_fighter) {
     return nb_fighter;
 }
 
-int select_fighter(int nb_fighters) {
+int seection_fighter(int nb_fighters) {
     return choix(nb_fighters);
 }
 
