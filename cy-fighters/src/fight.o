@@ -613,7 +613,7 @@ void tours(Teams *team, Fighters *attaquant, Fighters enemie_team[], int nb_enem
 void joueur_vs_univers(Teams *team, Fighters *joueur_team, int nb_joueurs, Fighters *enemie_team, int nb_enemies) {
 
     // Combiner les deux équipes pour gérer les tours en fonction de la vitesse
-    Fighters tout_joueur[MAX_MEMBRES*2];
+    Fighters tout_joueurs[MAX_MEMBRES*2];
     int total_joueurs = nb_joueurs + nb_enemies;
     // Ajouter le suffixe (e1) pour les robots de l'équipe 1
 
@@ -645,15 +645,15 @@ void joueur_vs_univers(Teams *team, Fighters *joueur_team, int nb_joueurs, Fight
     int context = 1; // Variable de contrôle pour la boucle principale
     while(context) {
         for (int i = 0; i < 2; i++) {
-            Fighters *attacker = &tout_joueur[i];
+            Fighters *attaquant = &tout_joueur[i];
 
             // Vérifier si l'attaquant est encore en vie
-            if (attacker->pv_courant <= 0) {
+            if (attaquant->pv_courant <= 0) {
                 continue; // Passer le tour si le combattant est vaincu
             }
             if (i < 1) {
                 // Tour d'un joueur
-                tours(team, attacker, enemie_team, nb_enemies);
+                tours(team, attaquant, enemie_team, nb_enemies);
             } else {
                 // Tour d'un ennemi
                 printf("\n\033[1;37mTour de l'univers !\033[0m\n");
@@ -661,29 +661,31 @@ void joueur_vs_univers(Teams *team, Fighters *joueur_team, int nb_joueurs, Fight
                 while (joueur_team[cible_index].pv_courant <= 0) {
                     cible_index = rand() % nb_joueurs; // Choisir une cible valide
                 }
-                int skill_index = rand() % attacker->nb_skills;
-                effect_target(attacker, &joueur_team[cible_index], skill_index);
+                int skill_index = rand() % attaquant->nb_skills;
+                effect_target(attaquant, &joueur_team[cible_index], skill_index);
                 maj_recharge(attacker);
                 maj_effets(attacker);
             }
 
             // Vérifier si une équipe est vaincue
-            int players_alive = 0, enemies_alive = 0;
+            int joueurs_vie = 0, enemies_vie = 0;
             for (int j = 0; j < nb_joueurs; j++) {
-                if (joueur_team[j].pv_courant > 0) players_alive++;
+                if (joueur_team[j].pv_courant > 0){
+                    joueurs_vie++;
             }
             for (int j = 0; j < nb_enemies; j++) {
-                if (enemie_team[j].pv_courant > 0) enemies_alive++;
+                if (enemie_team[j].pv_courant > 0){
+                    enemies_vie++;
             }
 
-            if (players_alive == 0) {
+            if (joueurs_vie == 0) {
                 printf("\n\033[1;31mL'equipe a perdu !\033[0m\n");
-                lose();
+                defaite();
                 context = 0; // Sortir de la boucle principale
                 break;
-            } else if (enemies_alive == 0) {
+            } else if (enemies_vie== 0) {
                 printf("\n\033[1;32mL'univers a perdu !\033[0m\n");
-                win();
+                victoire();
                 context = 0; // Sortir de la boucle principalent
                 break;
             }
@@ -691,14 +693,14 @@ void joueur_vs_univers(Teams *team, Fighters *joueur_team, int nb_joueurs, Fight
     }
 }
 
-void  playervsplayer(Teams *team1, Fighters *player_team1, int nb_players1, Teams *team2, Fighters *player_team2, int nb_players2) {
+void  playervsplayer(Teams *team1, Fighters *joueur_team1, int nb_joueurs1, Teams *team2, Fighters *joueurs_team2, int nb_joueurs2) {
 
     // Combiner les deux équipes pour gérer les tours en fonction de la vitesse
-    Fighters all_fighters[MAX_MEMBRES * 2];
-    int total_fighters = nb_players1 + nb_players2;
+    Fighters tout_joueurs[MAX_MEMBRES * 2];
+    int total_joueurs= nb_players1 + nb_players2;
 
-    for (int i = 0; i < nb_players1; i++) {
-        all_fighters[i] = player_team1[i];
+    for (int i = 0; i < nb_joueurs1; i++) {
+        tout_joueurs[i] = joueurs_team1[i];
             if (strlen(all_fighters[i].nom) + strlen(" (e1)") < MAX_CARATERES) {
                 strcat(all_fighters[i].nom, " (e1)");
             } else {
@@ -706,10 +708,10 @@ void  playervsplayer(Teams *team1, Fighters *player_team1, int nb_players1, Team
                 exit(1);
             }
     }
-    for (int i = 0; i < nb_players2; i++) {
-        all_fighters[nb_players1 + i] = player_team2[i];
-        if (strlen(all_fighters[nb_players1 + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
-            strcat(all_fighters[nb_players1 + i].nom, " (e2)");
+    for (int i = 0; i < nb_joueurs2; i++) {
+        tout_joueurs[nb_joueurs1 + i] = joueurs_team2[i];
+        if (strlen(tout_joueurs[nb_joueurs1 + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
+            strcat(tout_joueurs[nb_joeurs1 + i].nom, " (e2)");
         } else {
             printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
             exit(1);
@@ -717,48 +719,48 @@ void  playervsplayer(Teams *team1, Fighters *player_team1, int nb_players1, Team
     }
 
     // Trier les combattants par vitesse
-    speed_select(all_fighters, total_fighters);
+    tri_vitesse(all_fighters, total_fighters);
 
     // Boucle principale du jeu
     int context = 1; // Variable de contrôle pour la boucle principale
     while (context) {
         for (int i = 0; i < 2; i++) {
-            Fighters *attacker = &all_fighters[i];
+            Fighters *attaquant = &tout_joueurs[i];
 
             // Vérifier si l'attaquant est encore en vie
-            if (attacker->pv_courant <= 0) {
+            if (attaquant->pv_courant <= 0) {
                 continue; // Passer le tour si le combattant est vaincu
             }
 
             if (i < 1) {
                 // Tour d'un joueur de l'équipe 1
-                runround(team1, attacker, player_team2, nb_players2);
+                tours(team1, attaquant, joueurs_team2, nb_joueurs2);
             } else {
                 // Tour d'un joueur de l'équipe 2
-                runround(team2, attacker, player_team1, nb_players1);
+                runround(team2, attaquant, joueurs_team1, nb_joueurs1);
             }
 
             // Vérifier si une équipe est vaincue
-            int players1_alive = 0, players2_alive = 0;
-            for (int j = 0; j < nb_players1; j++) {
-                if (player_team1[j].pv_courant > 0) players1_alive++;
+            int joueurs1_vie = 0, joueurs2_vie = 0;
+            for (int j = 0; j < nb_joueurs1; j++) {
+                if (joueurs_team1[j].pv_courant > 0) joueurs1_vie++;
             }
-            for (int j = 0; j < nb_players2; j++) {
-                if (player_team2[j].pv_courant > 0) players2_alive++;
+            for (int j = 0; j < nb_joueurs2; j++) {
+                if (joueurs_team2[j].pv_courant > 0) joueurs2_vie++;
             }
 
-            if (players1_alive == 0) {
+            if (joueurs1_vie == 0) {
                 printf("\n\033[1;31mL'equipe 1 a perdu !\033[0m\n");
-                lose();
+                defaite();
                 printf("\n\033[1;32mL'equipe 2 a gagner !\033[0m\n");
-                win();
+                victoire();
                 context = 0; // Sortir de la boucle principale
                 break;
-            } else if (players2_alive == 0) {
+            } else if (joueurs2_vie == 0) {
                 printf("\n\033[1;32mL'equipe 2 a perdu !\033[0m\n");
-                lose();
+                defaite();
                 printf("\n\033[1;31mL'equipe 1 a gagner !\033[0m\n");
-                win();
+                victoire();
                 context = 0; // Sortir de la boucle principale
                 break;
             }
@@ -769,22 +771,22 @@ void  playervsplayer(Teams *team1, Fighters *player_team1, int nb_players1, Team
 void robotvsrobot(Teams *team1, Fighters *robot_team1, int nb_robots1, Teams *team2, Fighters *robot_team2, int nb_robots2) {
 
     // Combiner les deux équipes pour gérer les tours en fonction de la vitesse
-    Fighters all_fighters[MAX_MEMBRES * 2];
-    int total_fighters = nb_robots1 + nb_robots2;
+    Fighters tout_joueurs[MAX_MEMBRES * 2];
+    int total_joueurs = nb_robots1 + nb_robots2;
 
     for (int i = 0; i < nb_robots1; i++) {
-        all_fighters[i] = robot_team1[i];
-        if(strlen(all_fighters[i].nom) + strlen(" (e1)") < MAX_CARATERES) {
-            strcat(all_fighters[i].nom, " (e1)");
+        tout_joueurs[i] = robot_team1[i];
+        if(strlen(tout_joueurs[i].nom) + strlen(" (e1)") < MAX_CARATERES) {
+            strcat(tout_joueurs[i].nom, " (e1)");
         } else {
             printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
             exit(1);
         }
     }
     for (int i = 0; i < nb_robots2; i++) {
-        all_fighters[nb_robots1 + i] = robot_team2[i];
-        if(strlen(all_fighters[nb_robots1 + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
-            strcat(all_fighters[nb_robots1 + i].nom, " (e2)");
+        tout_joueurs[nb_robots1 + i] = robot_team2[i];
+        if(strlen(tout_joueurs[nb_robots1 + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
+            strcat(tout_joueurs[nb_robots1 + i].nom, " (e2)");
         } else {
             printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
             exit(1);
@@ -792,64 +794,64 @@ void robotvsrobot(Teams *team1, Fighters *robot_team1, int nb_robots1, Teams *te
     }
 
     // Trier les combattants par vitesse
-    speed_select(all_fighters, total_fighters);
+    tri_vitesse(tout_joueurs, total_joueurs);
 
     // Boucle principale du jeu
     int context = 1; // Variable de contrôle pour la boucle principale
     while (context) {
-        for (int i = 0; i < total_fighters; i++) {
-            Fighters *attacker = &all_fighters[i];
+        for (int i = 0; i < total_joueurs; i++) {
+            Fighters *attaquant = &tout_joueurs[i];
 
             // Vérifier si l'attaquant est encore en vie
-            if (attacker->pv_courant <= 0) {
+            if (attaquant->pv_courant <= 0) {
                 continue; // Passer le tour si le combattant est vaincu
             }
 
             if (i < nb_robots1) {
                 // Tour d'un robot de l'équipe 1
-                printf("\033[1;37mTour de %s (Equipe 1) !\033[0m\n", attacker->nom);
-                int target_index = rand() % nb_robots2;
-                while (robot_team2[target_index].pv_courant <= 0) {
-                    target_index = rand() % nb_robots2; // Choisir une cible valide
+                printf("\033[1;37mTour de %s (Equipe 1) !\033[0m\n", attaquant->nom);
+                int cible_index = rand() % nb_robots2;
+                while (robot_team2[cible_index].pv_courant <= 0) {
+                    cible_index = rand() % nb_robots2; // Choisir une cible valide
                 }
-                int skill_index = rand() % attacker->nb_skills;
-                effect_target(attacker, &robot_team2[target_index], skill_index);
-                update_reload(attacker);
-                update_effects(attacker);
+                int skill_index = rand() % attaquant->nb_skills;
+                effets_cible(attaquant, &robot_team2[target_index], skill_index);
+                maj_rechargement(attaquant);
+                maj_effets(attaquant);
             } else {
                 // Tour d'un robot de l'équipe 2
-                printf("\033[1;37mTour de %s (Equipe 2) !\033[0m\n", attacker->nom);
-                int target_index = rand() % nb_robots1;
+                printf("\033[1;37mTour de %s (Equipe 2) !\033[0m\n", attaquant->nom);
+                int cible_index = rand() % nb_robots1;
                 while (robot_team1[target_index].pv_courant <= 0) {
-                    target_index = rand() % nb_robots1; // Choisir une cible valide
+                    cible_index = rand() % nb_robots1; // Choisir une cible valide
                 }
-                int skill_index = rand() % attacker->nb_skills;
-                effect_target(attacker, &robot_team1[target_index], skill_index);
-                update_reload(attacker);
-                update_effects(attacker);
+                int skill_index = rand() % attaquant->nb_skills;
+                effets_cible(attaquant, &robot_team1[target_index], skill_index);
+                maj_rechargement(attaquant);
+                maj_effets(attaquant);
             }
 
             // Vérifier si une équipe est vaincue
-            int robots1_alive = 0, robots2_alive = 0;
+            int robots1_vie = 0, robots2_vie = 0;
             for (int j = 0; j < nb_robots1; j++) {
-                if (robot_team1[j].pv_courant > 0) robots1_alive++;
+                if (robot_team1[j].pv_courant > 0) robots1_vie++;
             }
             for (int j = 0; j < nb_robots2; j++) {
-                if (robot_team2[j].pv_courant > 0) robots2_alive++;
+                if (robot_team2[j].pv_courant > 0) robots2_vie++;
             }
 
-            if (robots1_alive == 0) {
+            if (robots1_vie == 0) {
                 printf("\n\033[1;31mL'equipe 1 a perdu !\033[0m\n");
-                lose();
+                defaite();
                 printf("\n\033[1;32mL'equipe 2 a gagner !\033[0m\n");
-                win();
+                victoire();
                 context = 0; // Sortir de la boucle principale
                 break;
-            } else if (robots2_alive == 0) {
+            } else if (robots2_vie == 0) {
                 printf("\n\033[1;31mL'equipe 2 a perdu !\033[0m\n");
-                lose();
+                defaite();
                 printf("\n\033[1;32mL'equipe 1 a gagner !\033[0m\n");
-                win();
+                victoire();
                 context = 0; // Sortir de la boucle principale
                 break;
             }
