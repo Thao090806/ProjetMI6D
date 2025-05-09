@@ -1,10 +1,6 @@
-#ifndef SCRIPT_O
-#define SCRIPT_O
+#include "script.h"
 
-#include "../include/settings.h"
-
-
-void wizard() {
+void afficher_magicien() {
     printf(
         "\033[1;39m" 
         "  (\\.   \\      ,/)\n"
@@ -18,8 +14,7 @@ void wizard() {
     );
 }
 
-
-void story() {
+void histoire() {
     printf(
         "\033[1;33m"
         "        (\n"
@@ -42,7 +37,7 @@ void story() {
     );
 }
 
-void mode() {
+void mode_jeu() {
     printf("\n\n\033[1;33m"
         "L'univers vous guide...\n"
         "Choisissez votre voie et preparez-vous a entrer dans l'arene :\n"
@@ -54,7 +49,7 @@ void mode() {
     );
 }
 
-void cauldron() {
+void chaudron() {
     printf(
         "\033[1;39m"
         "         .\n"
@@ -76,8 +71,8 @@ void cauldron() {
     );
 }
 
-void speech() { 
-    wizard();
+void discours() {
+    afficher_magicien();
     printf(
         "\033[1;40m"
         "\"Guerriers, ecoutez les battements de la terre sous vos pas...\"\n"
@@ -92,7 +87,7 @@ void speech() {
     );
 }
 
-void win() {
+void victoire() {
     printf(
         "\033[1;32m"
         "       ___________\n"
@@ -114,30 +109,30 @@ void win() {
     );
 }
 
-void lose() {
-
+void defaite() {
     printf(
-            "\033[1;31m"
-            "       ______\n"
-            "    .-'      '-.\n"
-            "   /            \\\n"
-            "  |              |\n"
-            "  |,  .-.  .-.  ,|\n"
-            "  | )(_o/  \\o_)( |\n"
-            "  |/     /\\     \\|\n"
-            "  (_     ^^     _)\n"
-            "   \\__|IIIIII|__/\n"
-            "    | \\IIIIII/ |\n"
-            "    \\          /\n"
-            "     `--------`\n"
-            "\033[0m\n"
-            "\033[1;37m" // Blanc vif pour le message
-            "Vous vous etes battu avec courage, mais le destin en a decide autrement.\n"
-            "Votre chute n'est pas la fin, mais une lecon pour forger un avenir meilleur.\n"
-            "Relevez-vous, guerrier, car seule la perseverance mene a la gloire.\n"
-            "\033[0m"
+        "\033[1;31m"
+        "       ______\n"
+        "    .-'      '-.\n"
+        "   /            \\\n"
+        "  |              |\n"
+        "  |,  .-.  .-.  ,|\n"
+        "  | )(_o/  \\o_)( |\n"
+        "  |/     /\\     \\|\n"
+        "  (_     ^^     _)\n"
+        "   \\__|IIIIII|__/\n"
+        "    | \\IIIIII/ |\n"
+        "    \\          /\n"
+        "     `--------`\n"
+        "\033[0m\n"
+        "\033[1;37m"
+        "Vous vous etes battu avec courage, mais le destin en a decide autrement.\n"
+        "Votre chute n'est pas la fin, mais une lecon pour forger un avenir meilleur.\n"
+        "Relevez-vous, guerrier, car seule la perseverance mene a la gloire.\n"
+        "\033[0m"
     );
 }
 
-
-#endif
+void attendre(int secondes) {
+    sleep(secondes);
+}

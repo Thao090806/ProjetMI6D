@@ -5,7 +5,7 @@ Attaque; 70
 Defense; 35
 Agilite; 60
 Vitesse; 60
-Skills; Coup du vagabond, Determination, Riposte
+Competences; Coup du vagabond, Determination, Riposte
 
 Nom; Malenia
 Description; Une epeiste legendaire, incarnation de la grace et de la mort, redoutable mais fragile.
@@ -14,7 +14,7 @@ Attaque; 90
 Defense; 25
 Agilite; 100
 Vitesse; 80
-Skills; Danse de lames, Regeneration, Lame ecarlate
+Competences; Danse de lames, Regeneration, Lame ecarlate
 
 Nom; Godfrey
 Description; Un guerrier imposant, incarnation de la force brute et de la determination.
@@ -23,7 +23,7 @@ Attaque; 90
 Defense; 40
 Agilite; 50
 Vitesse; 40
-Skills; Frappe colossale, Rugissement bestial, Ecrasement terrestre
+Competences; Frappe colossale, Rugissement bestial, Ecrasement terrestre
 
 Nom; Ranni
 Description; Une sorciere enigmatique, gardienne des secrets des astres et des ombres.
@@ -32,7 +32,7 @@ Attaque; 100
 Defense; 20
 Agilite; 70
 Vitesse; 50
-Skills; Etoile glaciale, Invocation spectrale, Pluie d etoiles
+Competences; Etoile glaciale, Invocation spectrale, Pluie d etoiles
 
 Nom; Mohg
 Description; Un prince maudit, maitre des flammes sanglantes et des rituels interdits.
@@ -41,7 +41,7 @@ Attaque; 80
 Defense; 30
 Agilite; 60
 Vitesse; 50
-Skills; Flammes sanglantes, Rituel interdit, Marque du sang
+Competences; Flammes sanglantes, Rituel interdit, Marque du sang
 
 Nom; Morgott
 Description; Un roi maudit, dernier rempart d'un royaume dechire par la decadence.
@@ -50,4 +50,4 @@ Attaque; 80
 Defense; 40
 Agilite; 50
 Vitesse; 60
-Skills; Lame sacree, Pluie de lames, Jugement divin
+Competences; Lame sacree, Pluie de lames, Jugement divin
