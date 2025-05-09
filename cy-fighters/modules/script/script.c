@@ -136,3 +136,4 @@ void defaite() {
 void attendre(int secondes) {
     sleep(secondes);
 }
+

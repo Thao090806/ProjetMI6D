@@ -48,4 +48,4 @@ typedef struct {
     int nb_membres;
 } Equipe;
 
-#endifsdsd
+#endif
