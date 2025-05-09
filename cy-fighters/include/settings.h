@@ -35,16 +35,16 @@ typedef struct {
     int defense;
     int agilite;
     int vitesse;
-    Skills skills[MAX_SKILLS];
-    int nb_skills;
-    int reload[MAX_SKILLS];
-    Effects effects[MAX_EFFETS];
-    int nb_effects;
+    Competence competence [MAX_SKILLS];
+    int nb_competence;
+    int rechargement[MAX_SKILLS];
+    Effets effets[MAX_EFFETS];
+    int nb_effets;
 } Combattants;
 
 typedef struct {
     char *nom;
-    Fighters fighters[MAX_MEMBRES];
+    Combattants combattants[MAX_MEMBRES];
     int nb_membres;
 } Equipe;
 
