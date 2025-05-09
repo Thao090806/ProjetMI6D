@@ -22,7 +22,7 @@ int main(){
     Teams entity_team[MAX_MEMBRES]; 
     Teams enemy_team[MAX_MEMBRES]; 
 
-    srand(time(NULL));
+    srand(time(NULL)); 
 
     clean();
     

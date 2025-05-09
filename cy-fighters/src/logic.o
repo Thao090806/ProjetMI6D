@@ -21,34 +21,6 @@ void clean() {
     #endif
 }
 
-int ask(int max) {
-    int choix = -1;
-    int result;
-
-    do {
-        printf(
-            "\033[0m"
-            "\033[38;5;214m"
-            "\033[3m"
-            "\nFaites votre choix de 0 a %d  ? "
-            "\033[0m", max - 1
-        );
-
-        result = scanf("%d", &choix);
-
-        if (result != 1 || choix < 0 || choix >= max) {
-            printf(
-                "\033[1;39m"
-                "Votre choix est hors de portee. Essayez a nouveau entre 0 et %d.\n"
-                "\033[0m", max - 1
-            );
-            while (getchar() != '\n');
-        }
-    } while (result != 1 || choix < 0 || choix >= max);
-
-    return choix;
-}
-
 int show_fighters(Fighters fighters[], int nb_fighter) {
 
     if (nb_fighter <= 0) {
@@ -214,7 +186,7 @@ void show_team(Teams entity_team[], Teams enemy_team[]) {
         "\033[1;40m"
         "\033[1;31m"
         "%s, %s, %s"
-        " contre "
+        " VS "
         "%s, %s, %s\n"
         "\033[0m\n", entity_team[0].fighters[0].nom, entity_team[0].fighters[1].nom, entity_team[0].fighters[2].nom,
         enemy_team[0].fighters[0].nom, enemy_team[0].fighters[1].nom, enemy_team[0].fighters[2].nom
@@ -241,6 +213,17 @@ void univers(Fighters entity[], Teams entity_team[], Teams enemy_team[]) {
 
     show_team(entity_team, enemy_team);
 
+    // Extraire les combattants des équipes
+    Fighters player_team[MAX_MEMBRES];
+    Fighters enemy_team_fighters[MAX_MEMBRES];
+
+    for (int i = 0; i < MAX_MEMBRES; i++) {
+        player_team[i] = entity_team[0].fighters[i];
+        enemy_team_fighters[i] = enemy_team[0].fighters[i];
+    }
+
+    // Appeler playervsuniver avec les combattants extraits
+    playervsuniver(&entity_team[0], player_team, MAX_MEMBRES, enemy_team_fighters, MAX_MEMBRES);
 }
 
 void versus(Fighters entity[], Teams entity_team[], Teams enemy_team[]) {
@@ -261,6 +244,18 @@ void versus(Fighters entity[], Teams entity_team[], Teams enemy_team[]) {
 
     show_team(entity_team, enemy_team);
 
+
+    // Extraire les combattants des équipes
+    Fighters player_team[MAX_MEMBRES];
+    Fighters enemy_team_fighters[MAX_MEMBRES];
+
+    for (int i = 0; i < MAX_MEMBRES; i++) {
+        player_team[i] = entity_team[0].fighters[i];
+        enemy_team_fighters[i] = enemy_team[0].fighters[i];
+    }
+
+    playervsplayer(entity_team, player_team, MAX_MEMBRES, enemy_team, enemy_team_fighters, MAX_MEMBRES);
+    
 }
 
 void random(Fighters entity[], Teams entity_team[], Teams enemy_team[]) {
@@ -280,6 +275,8 @@ void random(Fighters entity[], Teams entity_team[], Teams enemy_team[]) {
     random_team(entity, MAX_MEMBRES, enemy_team);
 
     show_team(entity_team, enemy_team);
+
+    robotvsrobot(entity_team, entity_team[0].fighters, MAX_MEMBRES, enemy_team, enemy_team[0].fighters, MAX_MEMBRES);
 
 }
 

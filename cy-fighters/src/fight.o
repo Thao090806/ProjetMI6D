@@ -2,18 +2,51 @@
 #define FIGHT_O
 
 #include "initialization.o"
+#include "script.o"
+
+int ask(int max) {
+    int choix = -1;
+    int result;
+
+    do {
+        printf(
+            "\033[0m"
+            "\033[38;5;214m"
+            "\033[3m"
+            "\nFaites votre choix de 0 a %d  ? "
+            "\033[0m", max - 1
+        );
+
+        result = scanf("%d", &choix);
+
+        if (result != 1 || choix < 0 || choix >= max) {
+            printf(
+                "\033[1;39m"
+                "Votre choix est hors de portee. Essayez a nouveau entre 0 et %d.\n"
+                "\033[0m", max - 1
+            );
+            while (getchar() != '\n');
+        }
+    } while (result != 1 || choix < 0 || choix >= max);
+
+    return choix;
+}
 
 int select_skill(Fighters *fighters, int fighter_index) {
-
     printf(
         "\033[0m"
         "\033[38;5;214m"
         "\033[3m"
-        "%s,  de quel competence allez vous faire preuve ?\n"
+        "%s, de quel competence allez-vous faire preuve ?\n"
         "\033[0m", fighters[fighter_index].nom
     );
 
     for (int i = 0; i < fighters[fighter_index].nb_skills; i++) {
+        if (fighters[fighter_index].skills[i].nom == NULL || fighters[fighter_index].skills[i].description == NULL) {
+            printf("\033[1;31mErreur : competence non initialisee pour l'index %d.\033[0m\n", i);
+            continue;
+        }
+
         if (fighters[fighter_index].reload[i] > 0) {
             printf(
                 "\033[1;31m%d ~ %s "
@@ -22,9 +55,8 @@ int select_skill(Fighters *fighters, int fighter_index) {
             );
         } else {
             printf(
-                "\033[1;37m%d ~ %s\033[0m "
-                "  %d ~ %s : %s\n"
-                "\033[0m", i, fighters[fighter_index].skills[i].nom, fighters[fighter_index].skills[i].description
+                "\033[1;37m%d ~ %s\033[0m : %s\n",
+                i, fighters[fighter_index].skills[i].nom, fighters[fighter_index].skills[i].description
             );
         }
     }
@@ -33,36 +65,61 @@ int select_skill(Fighters *fighters, int fighter_index) {
     do {
         choix = ask(fighters[fighter_index].nb_skills);
         if (fighters[fighter_index].reload[choix] > 0) {
-            printf("\033[1;31mCette compétence est en recharge. Choisissez une autre compétence.\033[0m\n");
+            printf(
+                "\033[1;31m"
+                "Cette competence est en recharge. Choisissez une autre competence."
+                "\033[0m\n"
+            );
         }
     } while (fighters[fighter_index].reload[choix] > 0);
+
     return choix;
 }
 
 
 
 void attack_target(Fighters attacker[], Fighters target[], int skill_index, int degats) {
+
+    /*
+    Appliquer les degats à la cible
+    Afficher le message d'attaque
+    Vérifier si la cible est vaincue
+    Si oui, afficher le message de victoire
+    Sinon, afficher les PV restants
+    */
     if (skill_index < 0 || skill_index >= MAX_SKILLS) {
         printf(
             "\033[1;37m"
             "Index de competence invalide."
             "\033[0m\n"
         );
-        return;
+        exit(1);
     }
-    int chance_escape=(*target).agilite - (*attacker).agilite;
-    if(chance_escape>0){
-        int random_value = rand()%100;
-        if(random_value<chance_escape){
+
+    /*
+    Calculer la chance d'esquiver l'attaque par rapport à l'agilité de la cible
+    en fonction de l'agilité de l'attaquant
+    */
+    int chance_escape = (*target).agilite - (*attacker).agilite;
+
+    // Si la cible a une chance d'esquiver l'attaque, on génère un nombre aléatoire
+
+    if(chance_escape > 0){
+        int random_value = rand()%100; 
+        if(random_value < chance_escape){
             printf(
                 "\033[1;37m"    
-                "%s a esquivé l'attaque de %s !"
+                "%s a esquive l'attaque de %s !"
                 "\033[0m\n", (*target).nom, (*attacker).nom
             );
+
             return;
         }   
     }
+
+    // Si l'attaque n'est pas esquivée, on applique les dégâts
     (*target).pv_courant -= degats; 
+
     printf(
         "\033[1;37m"
         "%s attaque %s avec %s et inflige %d degats !"
@@ -70,6 +127,7 @@ void attack_target(Fighters attacker[], Fighters target[], int skill_index, int 
     );
 
     if ((*target).pv_courant <= 0) {
+        
         printf(
             "\033[1;37m"
             "%s a ete vaincu !"
@@ -85,13 +143,26 @@ void attack_target(Fighters attacker[], Fighters target[], int skill_index, int 
     }
 }
 
-void apply_effect(Fighters *target,const char *effect_name,int valeur,int tours){
-    if(target== NULL || effect_name == NULL || tours <= 0){
+void apply_effect(Fighters *target, const char *effect_name, int valeur, int tours) {
+    /*
+    Vérifier si la cible et le nom de l'effet sont valides
+    Appliquer l'effet sur la cible
+    Afficher le message d'application de l'effet
+    */
+    if (target == NULL || effect_name == NULL || tours <= 0) {
         printf("Erreur: cible ou nom d'effet invalide.\n");
-        return;
+        exit(1);
     }
-    for(int i=0; i<MAX_EFFETS; i++){
-        if((*target).effects[i].tours_restants == 0){
+
+    // Limiter la valeur de l'effet pour éviter des valeurs absurdes
+    if (valeur < 0) {
+        valeur = 0;
+    } else if (valeur > 1000) { // Exemple de limite arbitraire
+        valeur = 1000;
+    }
+
+    for (int i = 0; i < MAX_EFFETS; i++) {
+        if ((*target).effects[i].tours_restants == 0) {
             strcpy((*target).effects[i].nom, effect_name);
             (*target).effects[i].valeur = valeur;
             (*target).effects[i].tours_restants = tours;
@@ -104,14 +175,21 @@ void apply_effect(Fighters *target,const char *effect_name,int valeur,int tours)
         }
     }
     printf(
-            "\033[1;37m"
-            "Impossible d'appliquer l'effet %s sur %s, pas de place disponible."
-            "\033[0m\n", effect_name, (*target).nom
+        "\033[1;37m"
+        "Impossible d'appliquer l'effet %s sur %s, pas de place disponible."
+        "\033[0m\n", effect_name, (*target).nom
     );
-    
 }
 
 void update_effects(Fighters *target) {
+    /*
+    Vérifier si la cible est valide
+    Appliquer les effets actifs sur la cible
+    Réduire la durée de l'effet
+    Afficher le message d'expiration de l'effet
+    Réinitialiser les statistiques affectées
+    Réinitialiser l'effet
+    */
     for (int i = 0; i < MAX_EFFETS; i++) {
         if ((*target).effects[i].tours_restants > 0) {
             // Appliquer les effets actifs
@@ -123,7 +201,7 @@ void update_effects(Fighters *target) {
                 }
                 printf(
                     "\033[1;37m"
-                    "%s perd %d PV à cause de l'effet de saignement !"
+                    "%s perd %d PV a cause de l'effet de saignement !"
                     "\033[0m\n", target->nom, saignement
                 );
             }
@@ -135,7 +213,7 @@ void update_effects(Fighters *target) {
                 }
                 printf(
                     "\033[1;37m"
-                    "%s regagne %d PV grâce à l'effet de régénération !"
+                    "%s regagne %d PV grace a l'effet de regeneration !"
                     "\033[0m\n", target->nom, regeneration
                 );
             }
@@ -161,21 +239,12 @@ void update_effects(Fighters *target) {
                 (*target).vitesse -= (*target).effects[i].valeur;
             }
 
-            // Réduire la durée de l'effet
-            (*target).effects[i].tours_restants--;
-            if ((*target).effects[i].tours_restants == 0) {
-                printf(
-                    "\033[1;37m"
-                    "L'effet %s sur %s a expiré !"
-                    "\033[0m\n", (*target).effects[i].nom, target->nom
-                );
-
                 // Réduire la durée de l'effet
             (*target).effects[i].tours_restants--;
-            if ((*target).effects[i].tours_restants == 0) {
+            if ((*target).effects[i].tours_restants <= 0) {
                 printf(
                     "\033[1;37m"
-                    "L'effet %s sur %s a expiré !"
+                    "L'effet %s sur %s a expire !"
                     "\033[0m\n", (*target).effects[i].nom, target->nom
                 );
 
@@ -209,9 +278,12 @@ void update_effects(Fighters *target) {
         }
     }
 }
-}
+
 
 void update_reload(Fighters *fighter) {
+    /*
+    Reinitialiser le temps de recharge des compétences
+    */
     for (int i = 0; i < (*fighter).nb_skills; i++) {
         if ((*fighter).reload[i] > 0) {
             (*fighter).reload[i]--;
@@ -220,7 +292,15 @@ void update_reload(Fighters *fighter) {
 }
 
 void effect_target(Fighters *attacker, Fighters *target, int skill_index) {
+    /*
+    Appliquer l'effet de la compétence sur la cible
+    Afficher le message d'application de l'effet
+    Vérifier si la cible est vaincue
+    Si oui, afficher le message de victoire
+    Sinon, afficher les PV restants
+    */
     Skills skill = (*attacker).skills[skill_index];
+
     printf(
         "\033[1;37m"
         "%s utilise %s sur %s !"
@@ -228,12 +308,21 @@ void effect_target(Fighters *attacker, Fighters *target, int skill_index) {
     );
 
     if (strcmp(skill.nom, "Coup du vagabond") == 0) {
+        /*
+        Concernant la compétence "Coup du vagabond", on applique les dégâts
+        et on applique l'effet de saignement sur la cible
+        */
         int degats = (*attacker).attaque * skill.coefficient - (*target).defense;
         if (degats <= 0){
             degats = 0;
         }
         attack_target(attacker, target, skill_index, degats);
     }
+        /*
+        Concernant la compétence "Determination", "Frappe decisive", "Danse de lames" on applique les dégâts
+        et on applique l'effet de réduction
+        de défense sur la cible
+        */
     if (strcmp(skill.nom, "Determination") == 0) {
         int bonus = (*attacker).attaque * 0.5;
         (*attacker).attaque += bonus;
@@ -468,28 +557,34 @@ void effect_target(Fighters *attacker, Fighters *target, int skill_index) {
 }
 
 void speed_select(Fighters fighters[],int taille){
+    /*
+    Trier les combattants par vitesse
+    Utiliser un algorithme de tri simple
+    */
+    // Complexité O(1) (Espace)
+
+    // Complexité O(n^2) (Temps)
     for(int i=0; i<taille; i++){
-        for(int j=i+1; j<taille; j++){
+        for(int j=i+1; j<taille; j++){  // Tri dans l'ordre decroissant
             if(fighters[i].vitesse < fighters[j].vitesse){
                 Fighters temporary = fighters[i];
-                fighters[i] = fighters[j];
+                fighters[i] = fighters[j]; 
                 fighters[j] = temporary;
             }
         }
     }
 }
 
-void executer_tour(Fighters *attacker, Fighters enemy_team[], int nb_enemies) {
-    printf("\033[1;37mDébut du tour de %s !\033[0m\n", (*attacker).nom);
-
+void runround(Teams *team, Fighters *attacker, Fighters enemy_team[], int nb_enemies) {
+    printf("\n\033[1;37mDebut du tour de %s !\033[0m\n", (*team).nom);
     // Vérifier si l'attaquant est encore en vie
     if ((*attacker).pv_courant <= 0) {
-        printf("\033[1;31m%s est déjà vaincu et ne peut pas agir.\033[0m\n", (*attacker).nom);
+        printf("\033[1;31m%s est deja vaincu et ne peut pas agir.\033[0m\n", (*attacker).nom);
         return;
     }
 
     // Sélectionner une cible
-    printf("Choisissez une cible parmi l'équipe adverse :\n");
+    printf("Choisissez une cible parmi l'equipe adverse :\n");
     for (int i = 0; i < nb_enemies; i++) {
         printf("\033[1;37m%d ~ %s (%d PV restants)\033[0m\n", i, enemy_team[i].nom, enemy_team[i].pv_courant);
     }
@@ -497,7 +592,7 @@ void executer_tour(Fighters *attacker, Fighters enemy_team[], int nb_enemies) {
 
     // Vérifier si la cible est encore en vie
     if (enemy_team[target_index].pv_courant <= 0) {
-        printf("\033[1;31mLa cible %s est déjà vaincue. Choisissez une autre cible.\033[0m\n", enemy_team[target_index].nom);
+        printf("\033[1;31mLa cible %s est deja vaincue. Choisissez une autre cible.\033[0m\n", enemy_team[target_index].nom);
         return;
     }
 
@@ -508,45 +603,60 @@ void executer_tour(Fighters *attacker, Fighters enemy_team[], int nb_enemies) {
     effect_target(attacker, &enemy_team[target_index], skill_index);
 
     // Mettre à jour les tours de recharge
-    update_recharge(attacker);
+    update_reload(attacker);
 
     // Mettre à jour les effets actifs
     update_effects(attacker);
-    printf("\033[1;37mFin du tour de %s !\033[0m\n", (*attacker).nom);
+    printf("\n\033[1;37mFin du tour de %s !\033[0m\n", (*team).nom);
 }
 
-void jeu_tour_par_tour(Fighters player_team[], int nb_players, Fighters enemy_team[], int nb_enemies) {
-    printf("\033[1;37mDébut du jeu en mode tour par tour !\033[0m\n");
+void playervsuniver(Teams *team, Fighters *player_team, int nb_players, Fighters *enemy_team, int nb_enemies) {
 
     // Combiner les deux équipes pour gérer les tours en fonction de la vitesse
-    Fighters all_fighters[MAX_MEMBRES * 2];
+    Fighters all_fighters[MAX_MEMBRES*2];
     int total_fighters = nb_players + nb_enemies;
+    // Ajouter le suffixe (e1) pour les robots de l'équipe 1
+        
 
     for (int i = 0; i < nb_players; i++) {
         all_fighters[i] = player_team[i];
+        if (strlen(all_fighters[i].nom) + strlen(" (e1)") < MAX_CARATERES) {
+            strcat(all_fighters[i].nom, " (e1)");
+        } else {
+            printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
+            exit(1);
+        }
     }
     for (int i = 0; i < nb_enemies; i++) {
         all_fighters[nb_players + i] = enemy_team[i];
+        if (strlen(all_fighters[nb_players + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
+            strcat(all_fighters[nb_players + i].nom, " (e2)");
+        } else {
+            printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
+            exit(1);
+        }
     }
 
     // Trier les combattants par vitesse
+    // !
     speed_select(all_fighters, total_fighters);
 
     // Boucle principale du jeu
-    while (1) {
-        for (int i = 0; i < total_fighters; i++) {
+    int context = 1; // Variable de contrôle pour la boucle principale
+    while(context) {
+        for (int i = 0; i < 2; i++) {
             Fighters *attacker = &all_fighters[i];
 
             // Vérifier si l'attaquant est encore en vie
             if (attacker->pv_courant <= 0) {
                 continue; // Passer le tour si le combattant est vaincu
             }
-            if (i < nb_players) {
+            if (i < 1) {
                 // Tour d'un joueur
-                executer_tour(attacker, enemy_team, nb_enemies);
+                runround(team, attacker, enemy_team, nb_enemies);
             } else {
                 // Tour d'un ennemi
-                printf("\033[1;37mTour de l'ennemi %s !\033[0m\n", attacker->nom);
+                printf("\n\033[1;37mTour de l'univers !\033[0m\n");
                 int target_index = rand() % nb_players;
                 while (player_team[target_index].pv_courant <= 0) {
                     target_index = rand() % nb_players; // Choisir une cible valide
@@ -567,12 +677,181 @@ void jeu_tour_par_tour(Fighters player_team[], int nb_players, Fighters enemy_te
             }
 
             if (players_alive == 0) {
-                printf("\033[1;31mTous les joueurs ont été vaincus ! L'équipe ennemie gagne !\033[0m\n");
-                return;
+                printf("\n\033[1;31mL'equipe a perdu !\033[0m\n");
+                lose();
+                context = 0; // Sortir de la boucle principale
+                break;
+            } else if (enemies_alive == 0) {
+                printf("\n\033[1;32mL'univers a perdu !\033[0m\n");
+                win();
+                context = 0; // Sortir de la boucle principalent
+                break;
             }
-            if (enemies_alive == 0) {
-                printf("\033[1;32mTous les ennemis ont été vaincus ! L'équipe des joueurs gagne !\033[0m\n");
-                return;
+        }
+    }
+}
+
+void  playervsplayer(Teams *team1, Fighters *player_team1, int nb_players1, Teams *team2, Fighters *player_team2, int nb_players2) {
+
+    // Combiner les deux équipes pour gérer les tours en fonction de la vitesse
+    Fighters all_fighters[MAX_MEMBRES * 2];
+    int total_fighters = nb_players1 + nb_players2;
+
+    for (int i = 0; i < nb_players1; i++) {
+        all_fighters[i] = player_team1[i];
+            if (strlen(all_fighters[i].nom) + strlen(" (e1)") < MAX_CARATERES) {
+                strcat(all_fighters[i].nom, " (e1)");
+            } else {
+                printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
+                exit(1);
+            }
+    }
+    for (int i = 0; i < nb_players2; i++) {
+        all_fighters[nb_players1 + i] = player_team2[i];
+        if (strlen(all_fighters[nb_players1 + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
+            strcat(all_fighters[nb_players1 + i].nom, " (e2)");
+        } else {
+            printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
+            exit(1);
+        }
+    }
+
+    // Trier les combattants par vitesse
+    speed_select(all_fighters, total_fighters);
+
+    // Boucle principale du jeu
+    int context = 1; // Variable de contrôle pour la boucle principale
+    while (context) {
+        for (int i = 0; i < 2; i++) {
+            Fighters *attacker = &all_fighters[i];
+
+            // Vérifier si l'attaquant est encore en vie
+            if (attacker->pv_courant <= 0) {
+                continue; // Passer le tour si le combattant est vaincu
+            }
+
+            if (i < 1) {
+                // Tour d'un joueur de l'équipe 1
+                runround(team1, attacker, player_team2, nb_players2);
+            } else {
+                // Tour d'un joueur de l'équipe 2
+                runround(team2, attacker, player_team1, nb_players1);
+            }
+
+            // Vérifier si une équipe est vaincue
+            int players1_alive = 0, players2_alive = 0;
+            for (int j = 0; j < nb_players1; j++) {
+                if (player_team1[j].pv_courant > 0) players1_alive++;
+            }
+            for (int j = 0; j < nb_players2; j++) {
+                if (player_team2[j].pv_courant > 0) players2_alive++;
+            }
+
+            if (players1_alive == 0) {
+                printf("\n\033[1;31mL'equipe 1 a perdu !\033[0m\n");
+                lose();
+                printf("\n\033[1;32mL'equipe 2 a gagner !\033[0m\n");
+                win();
+                context = 0; // Sortir de la boucle principale
+                break;
+            } else if (players2_alive == 0) {
+                printf("\n\033[1;32mL'equipe 2 a perdu !\033[0m\n");
+                lose();
+                printf("\n\033[1;31mL'equipe 1 a gagner !\033[0m\n");
+                win();
+                context = 0; // Sortir de la boucle principale
+                break;
+            }
+        }
+    }
+}
+
+void robotvsrobot(Teams *team1, Fighters *robot_team1, int nb_robots1, Teams *team2, Fighters *robot_team2, int nb_robots2) {
+
+    // Combiner les deux équipes pour gérer les tours en fonction de la vitesse
+    Fighters all_fighters[MAX_MEMBRES * 2];
+    int total_fighters = nb_robots1 + nb_robots2;
+
+    for (int i = 0; i < nb_robots1; i++) {
+        all_fighters[i] = robot_team1[i];
+        if(strlen(all_fighters[i].nom) + strlen(" (e1)") < MAX_CARATERES) {
+            strcat(all_fighters[i].nom, " (e1)");
+        } else {
+            printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
+            exit(1);
+        }
+    }
+    for (int i = 0; i < nb_robots2; i++) {
+        all_fighters[nb_robots1 + i] = robot_team2[i];
+        if(strlen(all_fighters[nb_robots1 + i].nom) + strlen(" (e2)") < MAX_CARATERES) {
+            strcat(all_fighters[nb_robots1 + i].nom, " (e2)");
+        } else {
+            printf("Erreur : nom du combattant trop long pour ajouter le suffixe.\n");
+            exit(1);
+        }
+    }
+
+    // Trier les combattants par vitesse
+    speed_select(all_fighters, total_fighters);
+
+    // Boucle principale du jeu
+    int context = 1; // Variable de contrôle pour la boucle principale
+    while (context) {
+        for (int i = 0; i < total_fighters; i++) {
+            Fighters *attacker = &all_fighters[i];
+
+            // Vérifier si l'attaquant est encore en vie
+            if (attacker->pv_courant <= 0) {
+                continue; // Passer le tour si le combattant est vaincu
+            }
+
+            if (i < nb_robots1) {
+                // Tour d'un robot de l'équipe 1
+                printf("\033[1;37mTour de %s (Equipe 1) !\033[0m\n", attacker->nom);
+                int target_index = rand() % nb_robots2;
+                while (robot_team2[target_index].pv_courant <= 0) {
+                    target_index = rand() % nb_robots2; // Choisir une cible valide
+                }
+                int skill_index = rand() % attacker->nb_skills;
+                effect_target(attacker, &robot_team2[target_index], skill_index);
+                update_reload(attacker);
+                update_effects(attacker);
+            } else {
+                // Tour d'un robot de l'équipe 2
+                printf("\033[1;37mTour de %s (Equipe 2) !\033[0m\n", attacker->nom);
+                int target_index = rand() % nb_robots1;
+                while (robot_team1[target_index].pv_courant <= 0) {
+                    target_index = rand() % nb_robots1; // Choisir une cible valide
+                }
+                int skill_index = rand() % attacker->nb_skills;
+                effect_target(attacker, &robot_team1[target_index], skill_index);
+                update_reload(attacker);
+                update_effects(attacker);
+            }
+
+            // Vérifier si une équipe est vaincue
+            int robots1_alive = 0, robots2_alive = 0;
+            for (int j = 0; j < nb_robots1; j++) {
+                if (robot_team1[j].pv_courant > 0) robots1_alive++;
+            }
+            for (int j = 0; j < nb_robots2; j++) {
+                if (robot_team2[j].pv_courant > 0) robots2_alive++;
+            }
+
+            if (robots1_alive == 0) {
+                printf("\n\033[1;31mL'equipe 1 a perdu !\033[0m\n");
+                lose();
+                printf("\n\033[1;32mL'equipe 2 a gagner !\033[0m\n");
+                win();
+                context = 0; // Sortir de la boucle principale
+                break;
+            } else if (robots2_alive == 0) {
+                printf("\n\033[1;31mL'equipe 2 a perdu !\033[0m\n");
+                lose();
+                printf("\n\033[1;32mL'equipe 1 a gagner !\033[0m\n");
+                win();
+                context = 0; // Sortir de la boucle principale
+                break;
             }
         }
     }
