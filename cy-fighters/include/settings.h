@@ -17,14 +17,14 @@ typedef struct {
     int coefficient;
     int tours_actifs;
     int tours_recharge;
-} Skills;
+} Competence;
 
 typedef struct {
     Skills *skills;
     char nom[MAX_NAME];
     int tours_restants;
     int valeur;
-} Effects;
+} Effets;
 
 typedef struct {
     char nom[MAX_NAME];
@@ -40,12 +40,12 @@ typedef struct {
     int reload[MAX_SKILLS];
     Effects effects[MAX_EFFETS];
     int nb_effects;
-} Fighters;
+} Combattants;
 
 typedef struct {
     char *nom;
     Fighters fighters[MAX_MEMBRES];
     int nb_membres;
-} Teams;
+} Equipe;
 
 #endif  
