@@ -11,6 +11,5 @@ void chaudron();
 void discours(); 
 void victoire();
 void defaite();
-void attendre(int secondes);
 
 #endif

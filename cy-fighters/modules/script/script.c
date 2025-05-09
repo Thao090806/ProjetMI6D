@@ -132,8 +132,3 @@ void defaite() {
         "\033[0m"
     );
 }
-
-void attendre(int secondes) {
-    sleep(secondes);
-}
-
