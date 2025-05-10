@@ -360,7 +360,7 @@ void tour_equipe(Equipe *equipe, Personnage *attaquant, Personnage equipe_ennemi
         printf("\n\033[1;37mDebut du tour de %s !\033[0m\n", equipe->nom);
     }
     if (attaquant->pv_actuels <= 0) {
-        printf("\033[1;31m%s est deja vaincu et ne peut pas agir.\033[0m\n", attaquant->nom);
+        printf("\033[1;31m%s est dejà vaincu et ne peut pas agir.\033[0m\n", attaquant->nom);
         return;
     }
 
@@ -381,7 +381,12 @@ void tour_equipe(Equipe *equipe, Personnage *attaquant, Personnage equipe_ennemi
     effet_cible(attaquant, &equipe_ennemie[index_cible], index_competence);
     mettre_a_jour_recharge(attaquant);
     mettre_a_jour_effets(attaquant);
-    printf("\n\033[1;37mFin du tour de %s !\033[0m\n", equipe->nom);
+    if (equipe->nom == NULL) {
+        printf("\033[1;31mFin du tour de l'univers !\033[0m\n");
+    }
+    else {
+        printf("\033[1;37mFin du tour de %s !\033[0m\n", equipe->nom);
+    }
 }
 
 void joueur_vs_univers(Equipe *equipe_joueur, Personnage *equipe_j, int nb_joueurs, 

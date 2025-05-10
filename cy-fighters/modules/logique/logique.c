@@ -55,7 +55,6 @@ int afficher_personnages(Personnage personnages[], int nb_personnages) {
 
     return nb_personnages;
 }
-
 int choisir_personnage(int nb_personnages) {
     return demander(nb_personnages);
 }
@@ -65,12 +64,15 @@ void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[
 
     char tmp[MAX_CARACTERES];
     scanf("%s", tmp);
-    if(tmp == NULL || strlen(tmp) == 0 || strlen(tmp) > MAX_NOM) {
-        printf("\033[1;31mErreur : nom d'equipe non valide.\033[0m\n");
+
+    int n = strlen(tmp);
+    if (n > MAX_CARACTERES) {
+        printf("\033[1;31mHmm ... C'est bien trop long.\n\033[0m");
         exit(1);
     }
 
-    (*equipe).nom = malloc(strlen(tmp) + 1);
+    (*equipe).nom = malloc(sizeof(char) * (n + 1));
+    strcpy((*equipe).nom, tmp);
 
     while (getchar() != '\n');
 
@@ -200,6 +202,6 @@ void charger(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[
     } else if (mode == 1) {
         mode_versus(entites, equipe_joueur, equipe_ennemi);
     }
-
+    
     printf("\n");
 }

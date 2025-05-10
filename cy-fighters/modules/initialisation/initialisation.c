@@ -126,36 +126,35 @@ void charger_competences(Personnage personnages[]) {
                 break;
             }
 
-            personnages[index].nb_competences = 0; // Toujours réinitialiser
+            char nom[MAX_CARACTERES] = {0};
+            char description[MAX_CARACTERES] = {0};
+            int coefficient = 0, tours_actifs = 0, tours_recharge = 0;
 
             for (int i = 0; i < MAX_COMPETENCES; i++) {
-                char nom[MAX_CARACTERES] = {0};
-                char description[MAX_CARACTERES] = {0};
-                int coefficient = 0, tours_actifs = 0, tours_recharge = 0;
-
-                // Lecture du nom de la compétence
                 if (fgets(ligne, MAX_FICHIERS, fp) == NULL || strlen(ligne) <= 1 || 
                     sscanf(ligne, "+; %[^\n]", nom) != 1) {
-                    // Si la ligne est vide ou mal formée, on considère qu'il n'y a plus de compétence pour ce personnage
-                    break;
+                    printf("Erreur : Ligne de competence mal formatee.\n");
+                    continue;
                 }
 
-                // Lecture des autres champs
                 if (fgets(ligne, MAX_FICHIERS, fp) == NULL || 
                     sscanf(ligne, "Description; %[^\n]", description) != 1) {
                     printf("Erreur : Description mal formatee.\n");
                     break;
                 }
+
                 if (fgets(ligne, MAX_FICHIERS, fp) == NULL || 
                     sscanf(ligne, "Coefficient; %d", &coefficient) != 1) {
                     printf("Erreur : Coefficient mal formate.\n");
                     break;
                 }
+
                 if (fgets(ligne, MAX_FICHIERS, fp) == NULL || 
                     sscanf(ligne, "Tours actifs; %d", &tours_actifs) != 1) {
                     printf("Erreur : Tours actifs mal formates.\n");
                     break;
                 }
+
                 if (fgets(ligne, MAX_FICHIERS, fp) == NULL || 
                     sscanf(ligne, "Tours recharge; %d", &tours_recharge) != 1) {
                     printf("Erreur : Tours recharge mal formates.\n");
@@ -167,8 +166,9 @@ void charger_competences(Personnage personnages[]) {
                     break;
                 }
 
-                personnages[index].competences[personnages[index].nb_competences] =
-                    creer_competence(nom, description, coefficient, tours_actifs, tours_recharge);
+                personnages[index].competences[i] = creer_competence(nom, description, 
+                                                                   coefficient, tours_actifs, 
+                                                                   tours_recharge);
                 personnages[index].nb_competences++;
             }
             index++;
