@@ -1,4 +1,6 @@
 #include "logique.h"
+#include "../script/script.h"
+#include "../combat/combat.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +34,6 @@ int afficher_personnages(Personnage personnages[], int nb_personnages) {
     }
 
     printf("\n");
-    
     for (int i = 0; i < nb_personnages; i++) {
         printf("\033[1;37m%d ~ %s\033[0m ", i, personnages[i].nom);
         printf("(PV: \033[1;33m%d/%d\033[0m, ATK: \033[1;33m%d\033[0m, DEF: \033[1;33m%d\033[0m, AGI: \033[1;33m%d\033[0m, VIT: \033[1;33m%d\033[0m)\n",
@@ -40,9 +41,14 @@ int afficher_personnages(Personnage personnages[], int nb_personnages) {
                personnages[i].attaque, personnages[i].defense, 
                personnages[i].agilite, personnages[i].vitesse);
 
-        printf("  Competences ~ ");
-        for (int j = 0; j < personnages[i].nb_competences; j++) {
-            printf("\033[90m(\033[0m\033[1;37m%s\033[0m\033[90m)\033[0m ", personnages[i].competences[j].nom);
+        printf("  Competences ~");
+        if (personnages[i].nb_competences == 0) {
+            printf(" (Aucune)");
+        } else {
+            for (int j = 0; j < personnages[i].nb_competences; j++) {
+                if (personnages[i].competences[j].nom && strlen(personnages[i].competences[j].nom) > 0)
+                    printf(" (%s)", personnages[i].competences[j].nom);
+            }
         }
         printf("\n");
     }
@@ -59,15 +65,12 @@ void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[
 
     char tmp[MAX_CARACTERES];
     scanf("%s", tmp);
-
-    int n = strlen(tmp);
-    if (n > MAX_CARACTERES) {
-        printf("\033[1;31mHmm ... C'est bien trop long.\n\033[0m");
+    if(tmp == NULL || strlen(tmp) == 0 || strlen(tmp) > MAX_NOM) {
+        printf("\033[1;31mErreur : nom d'equipe non valide.\033[0m\n");
         exit(1);
     }
 
-    (*equipe).nom = malloc(sizeof(char) * (n + 1));
-    strcpy((*equipe).nom, tmp);
+    (*equipe).nom = malloc(strlen(tmp) + 1);
 
     while (getchar() != '\n');
 
@@ -189,22 +192,6 @@ void mode_versus(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_enn
                     equipe_ennemi, equipe_ennemi_membres, MAX_MEMBRES);
 }
 
-void mode_aleatoire(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[]) {
-    printf("\n\033[1;31mL'univers forme les deux equipes...\033[0m\n\n");
-    chaudron();
-
-    printf("Invocation equipe alliee...\n");
-    equipe_aleatoire(entites, MAX_MEMBRES, equipe_joueur);
-
-    printf("Invocation equipe enemie...\n");
-    equipe_aleatoire(entites, MAX_MEMBRES, equipe_ennemi);
-
-    afficher_equipe(equipe_joueur, equipe_ennemi);
-
-    robot_vs_robot(equipe_joueur, equipe_joueur[0].membres, MAX_MEMBRES, 
-                  equipe_ennemi, equipe_ennemi[0].membres, MAX_MEMBRES);
-}
-
 void charger(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[], int mode) {
     int nb_personnages = afficher_personnages(entites, MAX_PERSONNAGES);
 
@@ -212,8 +199,6 @@ void charger(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[
         mode_univers(entites, equipe_joueur, equipe_ennemi);
     } else if (mode == 1) {
         mode_versus(entites, equipe_joueur, equipe_ennemi);
-    } else if (mode == 2) {
-        mode_aleatoire(entites, equipe_joueur, equipe_ennemi);
     }
 
     printf("\n");

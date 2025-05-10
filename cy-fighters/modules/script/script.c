@@ -45,7 +45,7 @@ void mode_jeu() {
         "\033[1;37m"
         "0 ~ Vous et votre equipe contre des adversaires guides par l'univers.\n"
         "1 ~ Affrontez un autre joueur dans une bataille strategique.\n"
-        "2 ~ L'univers forme les equipes et guide leurs choix.\n"
+        "\033[0m"
     );
 }
 

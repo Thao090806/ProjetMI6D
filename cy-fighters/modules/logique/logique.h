@@ -1,7 +1,7 @@
 #ifndef LOGIQUE_H
 #define LOGIQUE_H
 
-#include "../entetes/parametres.h"
+#include "../../entetes/parametres.h"
 
 // Fonctions utilitaires
 void attendre(int secondes);
@@ -19,7 +19,6 @@ void equipe_aleatoire(Personnage personnages[], int nb_personnages, Equipe equip
 // Modes de jeu
 void mode_univers(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[]);
 void mode_versus(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[]);
-void mode_aleatoire(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[]);
 
 // Fonction principale
 void charger(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[], int mode);

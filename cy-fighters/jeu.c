@@ -40,10 +40,10 @@ int main() {
     mode_jeu();
 
     // Charger le mode de jeu sélectionné
-    charger(entites, equipe_joueur, equipe_ennemi, demander(3));
+    charger(entites, equipe_joueur, equipe_ennemi, demander(2));
 
     // Fin du jeu
-    fin_jeu(entites, equipe_joueur, equipe_ennemi);
+    liberation_de_memoire(entites, equipe_joueur, equipe_ennemi);
     printf("\n");
 
     return 0;

@@ -1,7 +1,7 @@
 #ifndef COMBAT_H
 #define COMBAT_H
 
-#include "../entetes/parametres.h"
+#include "../../entetes/parametres.h"
 
 // Fonctions de base
 int demander(int max);
@@ -21,7 +21,5 @@ void joueur_vs_univers(Equipe *equipe_joueur, Personnage *equipe_j, int nb_joueu
                       Personnage *equipe_ennemie, int nb_ennemis);
 void joueur_vs_joueur(Equipe *equipe1, Personnage *equipe_j1, int nb_joueurs1,
                      Equipe *equipe2, Personnage *equipe_j2, int nb_joueurs2);
-void robot_vs_robot(Equipe *equipe1, Personnage *robots1, int nb_robots1,
-                   Equipe *equipe2, Personnage *robots2, int nb_robots2);
 
 #endif

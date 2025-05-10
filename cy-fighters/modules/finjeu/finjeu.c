@@ -1,7 +1,7 @@
 #include "finjeu.h"
 #include <stdlib.h>
 
-void fin_jeu(Personnage personnages[], Equipe equipe[], Equipe equipe_ennemie[]) {
+void liberation_de_memoire(Personnage personnages[], Equipe equipe[], Equipe equipe_ennemie[]) {
     free(personnages);
     free(equipe);
     free(equipe_ennemie);
