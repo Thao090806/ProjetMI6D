@@ -1,0 +1,101 @@
+Personnage; 
++; Coup du vagabond
+Description; Une attaque equilibree, reflet de sa quete solitaire
+Coefficient; 1.4
+Tours actifs; 1
+Tours recharge; 0
++; Determination
+Description; Une volonte inebranlable qui renforce temporairement l'attaque
+Coefficient; 0
+Tours actifs; 2
+Tours recharge; 3
++; Frappe decisive
+Description; Une attaque puissante qui inflige de lourds degats a l'adversaire
+Coefficient; 1.6
+Tours actifs; 1
+Tours recharge; 3
+
+Personnage;
++; Danse de lames
+Description; Une serie d'attaques gracieuses et mortelles
+Coefficient; 1.5
+Tours actifs; 1
+Tours recharge; 0
++; Regeneration
+Description; Une force mystique qui restaure des points de vie apres chaque attaque
+Coefficient; 0
+Tours actifs; 3
+Tours recharge; 5
++; Lame ecarlate
+Description; Une frappe sanglante qui inflige des degats et applique un saignement
+Coefficient; 1.6
+Tours actifs; 2
+Tours recharge; 4
+
+Personnage;
++; Frappe colossale
+Description; Une attaque devastatrice qui ebranle l'ennemi
+Coefficient; 1.5
+Tours actifs; 1
+Tours recharge; 0
++; Rugissement bestial
+Description; Un cri puissant qui affaiblit les ennemis proches
+Coefficient; 0
+Tours actifs; 2
+Tours recharge; 4
++; Ecrasement terrestre
+Description; Une attaque de zone qui inflige des degats massifs
+Coefficient; 1.7
+Tours actifs; 1
+Tours recharge; 5
+
+Personnage;
++; Etoile glaciale
+Description; Une attaque magique qui inflige des degats et ralentit l'ennemi
+Coefficient; 1.4
+Tours actifs; 1
+Tours recharge; 0
++; Benediction lunaire
+Description; Augmente temporairement l'agilite et la vitesse du personnage
+Coefficient; 0
+Tours actifs; 3
+Tours recharge; 5
++; Pluie d'etoiles
+Description; Une attaque magique de zone
+Coefficient; 1.6
+Tours actifs; 1
+Tours recharge; 4
+
+Personnage;
++; Flammes sanglantes
+Description; Une attaque qui inflige des degats et applique un saignement
+Coefficient; 1.5
+Tours actifs; 1
+Tours recharge; 0
++; Rituel interdit
+Description; Inflige des degats massifs a tous les ennemis au prix de ses propres PV
+Coefficient; 1.9
+Tours actifs; 1
+Tours recharge; 5
++; Marque du sang
+Description; Affaiblit l'ennemi et reduit sa defense
+Coefficient; 0
+Tours actifs; 2
+Tours recharge; 4
+
+Personnage;
++; Lame sacree
+Description; Inflige des degats sacres
+Coefficient; 1.4
+Tours actifs; 1
+Tours recharge; 0
++; Pluie de lames
+Description; Une serie d'attaques rapides
+Coefficient; 1.5
+Tours actifs; 1
+Tours recharge; 2
++; Jugement divin
+Description; Inflige des degats massifs a tous les ennemis 
+Coefficient; 1.8
+Tours actifs; 1
+Tours recharge; 5

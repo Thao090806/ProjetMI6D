@@ -1,0 +1,53 @@
+Nom; Le Sans-eclat
+Description; Un guerrier errant, porteur d'un destin incertain, mais d'une volonte inebranlable.
+Point de vie max; 180
+Attaque; 70
+Defense; 35
+Agilite; 60
+Vitesse; 60
+Competences; Coup du vagabond, Determination, Riposte
+
+Nom; Malenia
+Description; Une epeiste legendaire, incarnation de la grace et de la mort, redoutable mais fragile.
+Point de vie max; 160
+Attaque; 90
+Defense; 25
+Agilite; 100
+Vitesse; 80
+Competences; Danse de lames, Regeneration, Lame ecarlate
+
+Nom; Godfrey
+Description; Un guerrier imposant, incarnation de la force brute et de la determination.
+Point de vie max; 200
+Attaque; 90
+Defense; 40
+Agilite; 50
+Vitesse; 40
+Competences; Frappe colossale, Rugissement bestial, Ecrasement terrestre
+
+Nom; Ranni
+Description; Une sorciere enigmatique, gardienne des secrets des astres et des ombres.
+Point de vie max; 150
+Attaque; 100
+Defense; 20
+Agilite; 70
+Vitesse; 50
+Competences; Etoile glaciale, Invocation spectrale, Pluie d etoiles
+
+Nom; Mohg
+Description; Un prince maudit, maitre des flammes sanglantes et des rituels interdits.
+Point de vie max; 190
+Attaque; 80
+Defense; 30
+Agilite; 60
+Vitesse; 50
+Competences; Flammes sanglantes, Rituel interdit, Marque du sang
+
+Nom; Morgott
+Description; Un roi maudit, dernier rempart d'un royaume dechire par la decadence.
+Point de vie max; 170
+Attaque; 80
+Defense; 40
+Agilite; 50
+Vitesse; 60
+Competences; Lame sacree, Pluie de lames, Jugement divin
