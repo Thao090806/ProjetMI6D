@@ -770,11 +770,6 @@ void joueur_vs_joueur(Equipe *equipe1, Personnage equipe_j1[], int nb_joueurs1,E
             }
             
             if (index_equipe1 < nb_joueurs1) {
-                printf(
-                    "\033[1;40m"
-                    "%s attaque avec %s !"
-                    "\033[0m\n", equipe1->nom, equipe_j1[index_equipe1].nom
-                );
                 tour_equipe_joueur(equipe1, &equipe_j1[index_equipe1], equipe_j2, nb_joueurs2);
                 mettre_a_jour_recharge(&equipe_j1[index_equipe1]);
                 mettre_a_jour_effets(&equipe_j1[index_equipe1]);
@@ -787,11 +782,6 @@ void joueur_vs_joueur(Equipe *equipe1, Personnage equipe_j1[], int nb_joueurs1,E
             }
             
             if (index_equipe2 < nb_joueurs2) {
-                printf(
-                    "\033[1;40m"
-                    "%s attaque avec %s !"
-                    "\033[0m\n", equipe2->nom, equipe_j2[index_equipe2].nom
-                );
                 tour_equipe_joueur(equipe2, &equipe_j2[index_equipe2], equipe_j1, nb_joueurs1);
                 mettre_a_jour_recharge(&equipe_j2[index_equipe2]);
                 mettre_a_jour_effets(&equipe_j2[index_equipe2]);
