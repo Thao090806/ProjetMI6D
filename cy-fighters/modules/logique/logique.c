@@ -13,6 +13,16 @@
 #endif
 
 void attendre(int secondes) {
+    /*
+        * La fonction sleep() est utilisée pour suspendre l'exécution du programme pendant un certain nombre de secondes.
+        * Sur Windows, on utilise Sleep() qui prend des millisecondes comme argument.
+        * Sur les systèmes Unix, on utilise sleep() qui prend des secondes comme argument.
+        * On utilise la directive de préprocesseur _WIN32 pour déterminer le système d'exploitation
+    */
+    if (secondes < 0) {
+        printf("\033[1;31mHmm ... C'est bien trop long.\n\033[0m");
+        exit(1);
+    }
     #ifdef _WIN32
         Sleep(secondes * 1000);
     #else
@@ -21,6 +31,12 @@ void attendre(int secondes) {
 }
 
 void nettoyer() {
+    /*
+        * La fonction system() est utilisée pour exécuter une commande système.
+        * Sur Windows, on utilise "cls" pour nettoyer l'écran.
+        * Sur les systèmes Unix, on utilise "clear" pour nettoyer l'écran.
+        * On utilise la directive de préprocesseur _WIN32 pour déterminer le système d'exploitation
+    */
     #ifdef _WIN32
         system("cls");
     #else
@@ -29,8 +45,15 @@ void nettoyer() {
 }
 
 int afficher_personnages(Personnage personnages[], int nb_personnages) {
-    if (nb_personnages <= 0) {
-        exit(3);
+    /*
+        * La fonction afficher_personnages() affiche les personnages disponibles dans le jeu.
+        * Elle prend en paramètre un tableau de Personnage et le nombre de personnages.
+        * Si le tableau est vide ou si le nombre de personnages est inférieur ou égal à 0, elle affiche un message d'erreur et quitte le programme.
+        * Sinon, elle affiche les informations de chaque personnage (nom, PV, ATK, DEF, AGI, VIT) ainsi que leurs compétences.
+    */
+    if(personnages == NULL || nb_personnages <= 0) {
+        printf("Erreur : Aucun personnages");
+        exit(1);
     }
 
     printf("\n");
@@ -56,10 +79,30 @@ int afficher_personnages(Personnage personnages[], int nb_personnages) {
     return nb_personnages;
 }
 int choisir_personnage(int nb_personnages) {
+    /*
+        * La fonction choisir_personnage() demande à l'utilisateur de choisir un personnage parmi ceux disponibles.
+        * Elle prend en paramètre le nombre de personnages disponibles.
+        * Si le nombre de personnages est inférieur ou égal à 0, elle affiche un message d'erreur et quitte le programme.
+        * Sinon, elle demande à l'utilisateur de choisir un personnage et retourne l'index du personnage choisi.
+    */
+    if (nb_personnages <= 0) {
+        printf("\033[1;31mHmm ... Il n'y a pas de personnages.\n\033[0m");
+        exit(1);
+    }
     return demander(nb_personnages);
 }
 
 void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[]) {
+    /*
+        * La fonction choisir_equipe() permet à l'utilisateur de choisir une équipe de personnages.
+        * Elle prend en paramètre un tableau de Personnage, le nombre de personnages disponibles et un pointeur vers une structure Equipe.
+        * Si le nombre de personnages est inférieur ou égal à 0, elle affiche un message d'erreur et quitte le programme.
+        * Sinon, elle demande à l'utilisateur de choisir un nom pour son équipe et sélectionne les membres de l'équipe.
+    */
+    if (nb_personnages <= 0) {
+        printf("\033[1;31mHmm ... Il n'y a pas de personnages.\n\033[0m");
+        exit(1);
+    }
     printf("\033[0m\033[38;5;214m\033[3m\nQuel sera le nom de votre equipe ? \033[0m");
 
     char tmp[MAX_CARACTERES];
@@ -108,6 +151,12 @@ void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[
 }
 
 void equipe_aleatoire(Personnage personnages[], int nb_personnages, Equipe equipe[]) {
+    /*
+        * La fonction equipe_aleatoire() génère une équipe de personnages aléatoires.
+        * Elle prend en paramètre un tableau de Personnage, le nombre de personnages disponibles et un pointeur vers une structure Equipe.
+        * Si le nombre de personnages est inférieur à 3, elle affiche un message d'erreur et quitte le programme.
+        * Sinon, elle sélectionne aléatoirement 3 membres pour l'équipe.
+    */
     if (nb_personnages < MAX_MEMBRES) {
         printf("\033[1;31mIl n'y a pas assez de combattants pour former une equipe !\033[0m\n");
         exit(1);
@@ -137,6 +186,11 @@ void equipe_aleatoire(Personnage personnages[], int nb_personnages, Equipe equip
 }
 
 void afficher_equipe(Equipe equipe_joueur[], Equipe equipe_ennemi[]) {
+    /*
+        * La fonction afficher_equipe() affiche les équipes de joueurs et d'ennemis.
+        * Elle prend en paramètre deux structures Equipe.
+        * Elle affiche le nom de chaque équipe ainsi que les membres de chaque équipe.
+    */
     attendre(2);
     nettoyer();
 
@@ -151,50 +205,56 @@ void afficher_equipe(Equipe equipe_joueur[], Equipe equipe_ennemi[]) {
            equipe_ennemi[0].membres[2].nom);
 }
 
-void mode_univers(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[]) {
-    printf("\n\n\033[1;39mFormez votre equipe.\033[0m");
+void mode_univers(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_univers[]) {
+    /*
+        * La fonction mode_univers() gère le mode de jeu "univers".
+        * Elle prend en paramètre un tableau de Personnage, une structure Equipe pour le joueur et une structure Equipe pour l'univers.
+        * Elle permet au joueur de choisir son équipe et génère aléatoirement l'équipe de l'univers.
+        * Ensuite, elle affiche les équipes et demande à l'utilisateur de choisir la difficulté de l'univers.
+    */
+    printf("\n\033[1;39mFormez votre equipe.\033[0m");
     choisir_equipe(entites, MAX_PERSONNAGES, &equipe_joueur[0]);
 
     chaudron();
     printf("\033[1;39mL'univers forme son equipe.\033[0m\n");
-    equipe_aleatoire(entites, MAX_MEMBRES, equipe_ennemi);
+    equipe_aleatoire(entites, MAX_MEMBRES, equipe_univers);
 
-    afficher_equipe(equipe_joueur, equipe_ennemi);
+    afficher_equipe(equipe_joueur, equipe_univers);
 
-    Personnage equipe_joueur_membres[MAX_MEMBRES];
-    Personnage equipe_ennemi_membres[MAX_MEMBRES];
+    printf("\nChoisissez la difficulte de l'univers :\n");
+    printf("0 ~ Debutant\n");
+    printf("1 ~ Facile\n");
+    printf("2 ~ Normal\n");
+    int difficulte = demander(3);
 
-    for (int i = 0; i < MAX_MEMBRES; i++) {
-        equipe_joueur_membres[i] = equipe_joueur[0].membres[i];
-        equipe_ennemi_membres[i] = equipe_ennemi[0].membres[i];
-    }
-
-    joueur_vs_univers(&equipe_joueur[0], equipe_joueur_membres, MAX_MEMBRES, 
-                     equipe_ennemi_membres, MAX_MEMBRES);
+    joueur_vs_univers(&equipe_joueur[0], equipe_joueur[0].membres, MAX_MEMBRES, equipe_univers[0].membres, MAX_MEMBRES, difficulte);
 }
 
-void mode_versus(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[]) {
-    printf("\033[1;39mFormez votre equipe.\033[0m\n");
-    choisir_equipe(entites, MAX_PERSONNAGES, &equipe_joueur[0]);
+void mode_versus(Personnage entites[], Equipe equipe1[], Equipe equipe2[]) {
+    /*
+        * La fonction mode_versus() gère le mode de jeu "versus".
+        * Elle prend en paramètre un tableau de Personnage et deux structures Equipe pour les deux équipes.
+        * Elle permet à chaque joueur de choisir son équipe et affiche les équipes.
+    */
+    printf("\033[1;39mFormez l'equipe 1.\033[0m\n");
+    choisir_equipe(entites, MAX_PERSONNAGES, &equipe1[0]);
 
-    printf("\033[1;39mFormez l'equipe adverse.\033[0m\n");
-    choisir_equipe(entites, MAX_PERSONNAGES, &equipe_ennemi[0]);
+    printf("\033[1;39mFormez l'equipe 2.\033[0m\n");
+    choisir_equipe(entites, MAX_PERSONNAGES, &equipe2[0]);
 
-    afficher_equipe(equipe_joueur, equipe_ennemi);
+    afficher_equipe(equipe1, equipe2);
 
-    Personnage equipe_joueur_membres[MAX_MEMBRES];
-    Personnage equipe_ennemi_membres[MAX_MEMBRES];
-
-    for (int i = 0; i < MAX_MEMBRES; i++) {
-        equipe_joueur_membres[i] = equipe_joueur[0].membres[i];
-        equipe_ennemi_membres[i] = equipe_ennemi[0].membres[i];
-    }
-
-    joueur_vs_joueur(equipe_joueur, equipe_joueur_membres, MAX_MEMBRES, 
-                    equipe_ennemi, equipe_ennemi_membres, MAX_MEMBRES);
+    joueur_vs_joueur(&equipe1[0], equipe1[0].membres, MAX_MEMBRES,
+                    &equipe2[0], equipe2[0].membres, MAX_MEMBRES);
 }
 
 void charger(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[], int mode) {
+    /*
+        * La fonction charger() charge les personnages et les équipes à partir d'un fichier.
+        * Elle prend en paramètre un tableau de Personnage, deux structures Equipe pour le joueur et l'ennemi, et un mode de jeu.
+        * Elle affiche les personnages disponibles et demande à l'utilisateur de choisir son équipe.
+        * Ensuite, elle génère aléatoirement l'équipe ennemie et affiche les équipes.
+    */
     int nb_personnages = afficher_personnages(entites, MAX_PERSONNAGES);
 
     if (mode == 0) {

@@ -4,6 +4,24 @@
 #include <string.h>
 
 Personnage creer_personnage(char *nom, char *description, int pv_max, int attaque, int defense, int agilite, int vitesse) {
+    /*
+        * Fonction pour creer un personnage avec les parametres fournis.
+        * Les parametres doivent etre valides, sinon la fonction affiche une erreur et quitte le programme.
+        * 
+        * nom : Nom du personnage
+        * description : Description du personnage
+        * pv_max : Points de vie maximum
+        * attaque : Points d'attaque
+        * defense : Points de defense
+        * agilite : Points d'agilite
+        * vitesse : Points de vitesse
+        *
+        * Retourne un objet Personnage initialise.
+    */
+    if(nom == NULL || description == NULL || pv_max <= 0 || attaque < 0 || defense < 0 || agilite < 0 || vitesse < 0) {
+        fprintf(stderr, "Erreur : Parametres invalides pour le personnage.\n");
+        exit(1);
+    }
     Personnage personnage;
 
     strcpy(personnage.nom, nom);
@@ -21,6 +39,22 @@ Personnage creer_personnage(char *nom, char *description, int pv_max, int attaqu
 }
 
 Competence creer_competence(char *nom, char *description, int coefficient, int tours_actifs, int tours_recharge) {
+    /*
+        * Fonction pour creer une competence avec les parametres fournis.
+        * Les parametres doivent etre valides, sinon la fonction affiche une erreur et quitte le programme.
+        * 
+        * nom : Nom de la competence
+        * description : Description de la competence
+        * coefficient : Coefficient de la competence
+        * tours_actifs : Tours d'activation de la competence
+        * tours_recharge : Tours de recharge de la competence
+        *
+        * Retourne un objet Competence initialise.
+    */
+    if(nom == NULL || description == NULL || coefficient < 0 || tours_actifs < 0 || tours_recharge < 0) {
+        fprintf(stderr, "Erreur : Parametres invalides pour la competence.\n");
+        exit(1);
+    }
     Competence competence;
 
     strcpy(competence.nom, nom);
@@ -33,12 +67,24 @@ Competence creer_competence(char *nom, char *description, int coefficient, int t
 }
 
 void charger_personnages(Personnage personnages[]) {
+    /*
+        * Fonction pour charger les personnages depuis un fichier texte.
+        * Le fichier doit etre formate correctement, sinon la fonction affiche une erreur et quitte le programme.
+        * 
+        * personnages : Tableau de personnages a remplir
+        *
+        * Retourne rien.
+    */
+    if(personnages == NULL) {
+        fprintf(stderr, "Erreur : Tableau de personnages null.\n");
+        exit(1);
+    }
     char source[MAX_CARACTERES] = "donnees/personnages.txt";
     printf("Chargement des personnages depuis %s...\n", source);
 
     FILE *fp = fopen(source, "r");
     if (fp == NULL) {
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s.\n", source);
+        fprintf(stderr, "Erreur : Ouverture du fichier %s compromise.\n", source);
         exit(2);
     }
 
@@ -107,12 +153,24 @@ void charger_personnages(Personnage personnages[]) {
 }
 
 void charger_competences(Personnage personnages[]) {
+    /*
+        * Fonction pour charger les competences depuis un fichier texte.
+        * Le fichier doit etre formate correctement, sinon la fonction affiche une erreur et quitte le programme.
+        * 
+        * personnages : Tableau de personnages a remplir
+        *
+        * Retourne rien.
+    */
+    if(personnages == NULL) {
+        fprintf(stderr, "Erreur : Tableau de personnages null.\n");
+        exit(1);
+    }
     char source[MAX_CARACTERES] = "donnees/competences.txt";
     printf("Chargement des competences depuis %s...\n", source);
 
     FILE *fp = fopen(source, "r");
     if (fp == NULL) {
-        fprintf(stderr, "Erreur lors de l'ouverture du fichier %s.\n", source);
+        fprintf(stderr, "Erreur : Ouverture du fichier %s compromise.\n", source);
         exit(2);
     }
 
@@ -180,6 +238,18 @@ void charger_competences(Personnage personnages[]) {
 }
 
 void initialiser(Personnage entites[]) {
+    /*
+        * Fonction pour initialiser le jeu.
+        * Charge les personnages et les competences depuis les fichiers.
+        * 
+        * entites : Tableau de personnages a remplir
+        *
+        * Retourne rien.
+    */
+    if(entites == NULL) {
+        fprintf(stderr, "Erreur : Tableau de personnages null.\n");
+        exit(1);
+    }
     charger_personnages(entites);
     charger_competences(entites);
 }

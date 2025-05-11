@@ -1,4 +1,5 @@
 #include "combat.h"
+#include "../logique/logique.h"
 #include "../script/script.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,6 +7,19 @@
 #include <time.h>
 
 int demander(int max) {
+    /*
+        * Demande à l'utilisateur de choisir un nombre entre 0 et max-1.
+        * 
+        * Paramètres :
+        * - max : valeur maximale (exclusif)
+        * 
+        * Retourne :
+        * - Le choix de l'utilisateur
+    */
+    if (max <= 0) {
+        printf("\033[1;31mErreur : la valeur max doit etre superieure a 0.\033[0m\n");
+        exit(1);
+    }
     int choix = -1;
     int resultat;
 
@@ -23,6 +37,17 @@ int demander(int max) {
 }
 
 int choisir_competence(Personnage *personnage, int index_personnage) {
+    /*
+        * Choisit une compétence à utiliser par le personnage.
+        * 
+        * Paramètres :
+        * - personnage : tableau de personnages
+        * - index_personnage : index du personnage dans le tableau
+    */
+    if (personnage == NULL || index_personnage < 0 || index_personnage >= MAX_MEMBRES) {
+        printf("\033[1;31mErreur : personnage ou index invalide.\033[0m\n");
+        exit(1);
+    }
     printf("\033[0m\033[38;5;214m\033[3m%s, de quelle competence allez-vous faire preuve ?\n\033[0m", 
            personnage[index_personnage].nom);
 
@@ -56,33 +81,57 @@ int choisir_competence(Personnage *personnage, int index_personnage) {
 }
 
 void attaquer_cible(Personnage *attaquant, Personnage *cible, int index_competence, int degats) {
-    if (index_competence < 0 || index_competence >= MAX_COMPETENCES) {
-        printf("\033[1;37mIndex de competence invalide.\033[0m\n");
-        exit(1);
+    /*
+        * Applique les dégâts à la cible.
+        * 
+        * Paramètres :
+        * - attaquant : pointeur vers le personnage attaquant
+        * - cible : pointeur vers le personnage cible
+        * - index_competence : index de la compétence utilisée
+        * - degats : dégâts infligés
+        
+    */
+    if (attaquant == NULL || cible == NULL || attaquant->nom[0] == '\0' || cible->nom[0] == '\0') {
+        printf("\033[1;31mErreur: cible ou attaquant invalide\033[0m\n");
+        return;
     }
 
-    int chance_esquive = cible->agilite - attaquant->agilite;
-    if (chance_esquive > 0) {
-        int valeur_aleatoire = rand() % 100; 
-        if (valeur_aleatoire < chance_esquive) {
-            printf("\033[1;37m%s a esquive l'attaque de %s !\033[0m\n", cible->nom, attaquant->nom);
-            return;
-        }   
+    if ((rand() % 100) < (cible->agilite - attaquant->agilite)) {
+        printf("\033[1;37m%s a esquive l'attaque de %s!\033[0m\n", cible->nom, attaquant->nom);
+        return;
     }
 
+    degats = (degats < 0) ? 0 : degats;  
     cible->pv_actuels -= degats;
-    printf("\033[1;37m%s attaque %s avec %s et inflige %d degats !\033[0m\n", 
-           attaquant->nom, cible->nom, attaquant->competences[index_competence].nom, degats);
+
+    printf("\033[1;37m%s attaque %s avec %s (%d degats)\033[0m\n",
+           attaquant->nom, cible->nom, 
+           attaquant->competences[index_competence].nom, 
+           degats);
 
     if (cible->pv_actuels <= 0) {
-        printf("\033[1;37m%s a ete vaincu !\033[0m\n", cible->nom);
         cible->pv_actuels = 0;
+        printf("\033[1;31m%s a ete vaincu!\033[0m\n", cible->nom);
     } else {
-        printf("\033[1;37m%s a encore %d PV restants.\033[0m\n", cible->nom, cible->pv_actuels);
+        printf("PV restants: %d\n", cible->pv_actuels);
     }
 }
 
 void appliquer_effet(Personnage *cible, const char *nom_effet, int valeur, int tours) {
+    /*
+        * Applique un effet sur le personnage cible.
+        * 
+        * Paramètres :
+        * - cible : pointeur vers le personnage
+        * - nom_effet : nom de l'effet
+        * - valeur : valeur de l'effet
+        * - tours : nombre de tours restants
+    */
+    if (cible == NULL || nom_effet == NULL) {
+        printf("\033[1;31mErreur : cible ou nom d'effet invalide.\033[0m\n");
+        exit(1);
+    }
+
     if (cible == NULL || nom_effet == NULL || tours <= 0) {
         printf("Erreur: cible ou nom d'effet invalide.\n");
         exit(1);
@@ -106,6 +155,16 @@ void appliquer_effet(Personnage *cible, const char *nom_effet, int valeur, int t
 }
 
 void mettre_a_jour_effets(Personnage *cible) {
+    /*
+        * Met à jour les effets actifs sur le personnage.
+        * 
+        * Paramètres :
+        * - cible : pointeur vers le personnage
+    */
+    if (cible == NULL) {
+        printf("\033[1;31mErreur : cible invalide.\033[0m\n");
+        exit(1);
+    }
     for (int i = 0; i < MAX_EFFETS; i++) {
         if (cible->effets[i].tours_restants > 0) {
             if (strcmp(cible->effets[i].nom, "saignement") == 0) {
@@ -182,7 +241,17 @@ void mettre_a_jour_effets(Personnage *cible) {
     }
 }
 
-void mettre_a_jour_recharge(Personnage *personnage) {
+void mettre_a_jour_recharge(Personnage *personnage) {  
+    /*
+        * Met à jour le temps de recharge des compétences du personnage.
+        * 
+        * Paramètres :
+        * - personnage : pointeur vers le personnage
+    */
+    if (personnage == NULL) {
+        printf("\033[1;31mErreur : personnage invalide.\033[0m\n");
+        exit(1);
+    }
     for (int i = 0; i < personnage->nb_competences; i++) {
         if (personnage->recharge[i] > 0) {
             personnage->recharge[i]--;
@@ -191,6 +260,18 @@ void mettre_a_jour_recharge(Personnage *personnage) {
 }
 
 void effet_cible(Personnage *attaquant, Personnage *cible, int index_competence) {
+    /*
+        * Fonction d'effet de compétence sur la cible.
+        * 
+        * Paramètres :
+        * - attaquant : pointeur vers le personnage attaquant
+        * - cible : pointeur vers le personnage cible
+        * - index_competence : index de la compétence utilisée
+    */
+    if (attaquant == NULL || cible == NULL || index_competence < 0 || index_competence >= MAX_COMPETENCES) {
+        printf("\033[1;31mErreur : attaquant ou cible invalide.\033[0m\n");
+        exit(1);
+    }
     Competence competence = attaquant->competences[index_competence];
     printf("\033[1;37m%s utilise %s sur %s !\033[0m\n", 
            attaquant->nom, competence.nom, cible->nom);
@@ -340,31 +421,26 @@ void effet_cible(Personnage *attaquant, Personnage *cible, int index_competence)
     attaquant->recharge[index_competence] = competence.tours_recharge;
 }
 
-void trier_vitesse(Personnage personnages[], int taille) {
-    for (int i = 0; i < taille; i++) {
-        for (int j = i+1; j < taille; j++) {
-            if (personnages[i].vitesse < personnages[j].vitesse) {
-                Personnage temp = personnages[i];
-                personnages[i] = personnages[j];
-                personnages[j] = temp;
-            }
-        }
-    }
-}
-
-void tour_equipe(Equipe *equipe, Personnage *attaquant, Personnage equipe_ennemie[], int nb_ennemis) {
-    if (equipe->nom == NULL){
-        printf("\033[1;31mDebut du tour de l'univers !\033[0m\n");
-    }
-    else {
-        printf("\n\033[1;37mDebut du tour de %s !\033[0m\n", equipe->nom);
-    }
+void tour_equipe_joueur(Equipe *equipe, Personnage *attaquant, Personnage equipe_ennemie[], int nb_ennemis) {
+    /*
+        * Procedure de combat pour l'équipe du joueur.
+        * Le joueur choisit une cible parmi les ennemis et utilise une compétence.
+        * 
+        * Paramètres :
+        * - equipe : pointeur vers l'équipe du joueur
+        * - attaquant : pointeur vers le personnage attaquant
+        * - equipe_ennemie : tableau de personnages ennemis
+        * - nb_ennemis : nombre d'ennemis dans l'équipe ennemie
+    */
+    printf("\n\033[1;37mTour de %s (%s) !\033[0m\n", equipe->nom, attaquant->nom);
+    
     if (attaquant->pv_actuels <= 0) {
-        printf("\033[1;31m%s est dejà vaincu et ne peut pas agir.\033[0m\n", attaquant->nom);
+        printf("\033[1;31m%s est deja vaincu et ne peut pas agir.\033[0m\n", attaquant->nom);
         return;
     }
 
-    printf("Choisissez une cible parmi l'equipe adverse :\n");
+    // Choix de la cible
+    printf("Choisissez une cible parmi l'univers :\n");
     for (int i = 0; i < nb_ennemis; i++) {
         printf("\033[1;37m%d ~ %s (%d PV restants)\033[0m\n", 
                i, equipe_ennemie[i].nom, equipe_ennemie[i].pv_actuels);
@@ -377,164 +453,213 @@ void tour_equipe(Equipe *equipe, Personnage *attaquant, Personnage equipe_ennemi
         return;
     }
 
+    // Choix de la compétence
     int index_competence = choisir_competence(attaquant, 0);
     effet_cible(attaquant, &equipe_ennemie[index_cible], index_competence);
-    mettre_a_jour_recharge(attaquant);
-    mettre_a_jour_effets(attaquant);
-    if (equipe->nom == NULL) {
-        printf("\033[1;31mFin du tour de l'univers !\033[0m\n");
+}
+
+void tour_univers(Personnage *attaquant, Personnage equipe_joueur[], int nb_joueurs, int difficulte) {
+    /*
+        * Procedure de combat pour l'univers.
+        * L'univers choisit une cible parmi les joueurs et utilise une compétence.
+        * 
+        * Paramètres :
+        * - attaquant : pointeur vers le personnage de l'univers
+        * - equipe_joueur : tableau de personnages de l'équipe du joueur
+        * - nb_joueurs : nombre de joueurs dans l'équipe du joueur
+        * - difficulte : niveau de difficulté (0: Débutant, 1: Facile, 2: Normal)
+    */
+    printf("\n\033[1;31mTour de l'univers (%s) !\033[0m\n", attaquant->nom);
+    
+    if (attaquant->pv_actuels <= 0) {
+        printf("\033[1;31m%s est deja vaincu et ne peut pas agir.\033[0m\n", attaquant->nom);
+        return;
     }
-    else {
-        printf("\033[1;37mFin du tour de %s !\033[0m\n", equipe->nom);
+
+    // Choix de la cible par l'univers
+    int index_cible = 0;
+    if (difficulte == 0) { // Débutant - aléatoire
+        do {
+            index_cible = rand() % nb_joueurs;
+        } while (equipe_joueur[index_cible].pv_actuels <= 0);
+    } else { // Facile/Normal - cible la plus faible
+        int min_pv = 1000000;
+        for (int j = 0; j < nb_joueurs; j++) {
+            if (equipe_joueur[j].pv_actuels > 0 && equipe_joueur[j].pv_actuels < min_pv) {
+                min_pv = equipe_joueur[j].pv_actuels;
+                index_cible = j;
+            }
+        }
+    }
+
+    // Choix de la compétence par l'univers
+    int index_competence = 0;
+    if (difficulte == 2) { // Normal - privilégie compétences spéciales
+        if (attaquant->nb_competences > 2 && attaquant->recharge[2] == 0) {
+            index_competence = 2;
+        } else if (attaquant->nb_competences > 1 && attaquant->recharge[1] == 0) {
+            index_competence = 1;
+        }
+    } // Sinon utilise la compétence de base (index 0)
+
+    printf("L'univers choisit %s comme cible et utilise %s !\n",
+           equipe_joueur[index_cible].nom, attaquant->competences[index_competence].nom);
+    
+    effet_cible(attaquant, &equipe_joueur[index_cible], index_competence);
+}
+
+void joueur_vs_univers(Equipe *equipe_joueur, Personnage equipe_j[], int nb_joueurs, Personnage equipe_univers[], int nb_univers, int difficulte) {
+    /*
+        * Procedure de combat entre une équipe de joueurs et une équipe d'univers.
+        * Chaque équipe joue à tour de rôle, en choisissant un personnage et une compétence.
+        * Le combat continue jusqu'à ce qu'une équipe soit vaincue.
+        * 
+        * Paramètres :
+        * - equipe_joueur : pointeur vers l'équipe du joueur
+        * - equipe_j : tableau de personnages de l'équipe du joueur
+        * - nb_joueurs : nombre de joueurs dans l'équipe du joueur
+        * - equipe_univers : tableau de personnages de l'équipe de l'univers
+        * - nb_univers : nombre de personnages dans l'équipe de l'univers
+    */
+    int tour = 0; // 0 pour joueur, 1 pour univers
+    int index_joueur = 0, index_univers = 0;
+    
+    int continuer = 1;
+    while (continuer) {
+        
+        if (tour == 0) { // Tour du joueur
+            // Trouver le prochain personnage vivant
+            while (index_joueur < nb_joueurs && equipe_j[index_joueur].pv_actuels <= 0) {
+                index_joueur++;
+            }
+            
+            if (index_joueur < nb_joueurs) {
+                printf("\n\033[1;36mTour de votre equipe (%s) !\033[0m\n", equipe_joueur->nom);
+                tour_equipe_joueur(equipe_joueur, &equipe_j[index_joueur], equipe_univers, nb_univers);
+                mettre_a_jour_recharge(&equipe_j[index_joueur]);
+                mettre_a_jour_effets(&equipe_j[index_joueur]);
+                index_joueur++;
+            }
+            tour = 1;
+        } else { // Tour de l'univers
+            // Trouver le prochain personnage vivant
+            while (index_univers < nb_univers && equipe_univers[index_univers].pv_actuels <= 0) {
+                index_univers++;
+            }
+            
+            if (index_univers < nb_univers) {
+                printf("\n\033[1;31mTour de l'univers (%s) !\033[0m\n", equipe_univers[index_univers].nom);
+                tour_univers(&equipe_univers[index_univers], equipe_j, nb_joueurs, difficulte);
+                mettre_a_jour_recharge(&equipe_univers[index_univers]);
+                mettre_a_jour_effets(&equipe_univers[index_univers]);
+                index_univers++;
+            }
+            tour = 0;
+        }
+        
+        // Réinitialiser les index si nécessaire
+        if (index_joueur >= nb_joueurs) index_joueur = 0;
+        if (index_univers >= nb_univers) index_univers = 0;
+        
+        // Vérifier fin de partie
+        int joueurs_vivants = 0, univers_vivants = 0;
+        for (int j = 0; j < nb_joueurs; j++) {
+            if (equipe_j[j].pv_actuels > 0) joueurs_vivants++;
+        }
+        for (int j = 0; j < nb_univers; j++) {
+            if (equipe_univers[j].pv_actuels > 0) univers_vivants++;
+        }
+
+        if (joueurs_vivants == 0) {
+            printf("\n\033[1;31mVous avez ete vaincu par l'univers !\033[0m\n");
+            defaite();
+            continuer = 0;
+        } else if (univers_vivants == 0) {
+            printf("\n\033[1;32mVous avez triomphe de l'univers !\033[0m\n");
+            victoire();
+            continuer = 0;
+        }
+        
+        attendre(2); // Pause pour lire les résultats
     }
 }
 
-void joueur_vs_univers(Equipe *equipe_joueur, Personnage *equipe_j, int nb_joueurs, 
-    Personnage *equipe_ennemie, int nb_ennemis) {
-    Personnage tous_combattants[MAX_MEMBRES*2];
-
-    printf("Quel sera le niveau de l'univers ?\n");
-    printf("0 ~ Debutant (competence 1, cible au hasard)\n");
-    printf("1 ~ Facile (competence 1, cible la plus faible)\n");
-    printf("2 ~ Normal (privilegie competence 3 ou 2, cible la plus faible)\n");
-
-    int niveau_univers = demander(3);
-
-    int total_combattants = nb_joueurs + nb_ennemis;
-
-    for (int i = 0; i < nb_joueurs; i++) {
-        tous_combattants[i] = equipe_j[i];
-        if (strlen(tous_combattants[i].nom) + strlen(" (e1)") < MAX_CARACTERES) {
-            strcat(tous_combattants[i].nom, " (e1)");
-        }
-    }
-    for (int i = 0; i < nb_ennemis; i++) {
-        tous_combattants[nb_joueurs + i] = equipe_ennemie[i];
-        if (strlen(tous_combattants[nb_joueurs + i].nom) + strlen(" (e2)") < MAX_CARACTERES) {
-            strcat(tous_combattants[nb_joueurs + i].nom, " (e2)");
-        }
-    }
-
-    trier_vitesse(tous_combattants, total_combattants);
-
+void joueur_vs_joueur(Equipe *equipe1, Personnage equipe_j1[], int nb_joueurs1,
+                     Equipe *equipe2, Personnage equipe_j2[], int nb_joueurs2) {
+    /*
+        * Procedure de combat entre deux équipes de joueurs.
+        * Chaque équipe joue à tour de rôle, en choisissant un personnage et une compétence.
+        * Le combat continue jusqu'à ce qu'une équipe soit vaincue.
+        * 
+        * Paramètres :
+        * - equipe1 : pointeur vers la première équipe
+        * - equipe_j1 : tableau de personnages de l'équipe 1
+        * - nb_joueurs1 : nombre de joueurs dans l'équipe 1
+        * - equipe2 : pointeur vers la deuxième équipe
+        * - equipe_j2 : tableau de personnages de l'équipe 2
+        * - nb_joueurs2 : nombre de joueurs dans l'équipe 
+    */
+    int tour = 0; // 0 pour équipe1, 1 pour équipe2
+    int index_equipe1 = 0, index_equipe2 = 0;
+    
     int continuer = 1;
     while (continuer) {
-        for (int i = 0; i < total_combattants; i++) {
-            if (tous_combattants[i].pv_actuels <= 0) continue;
-
-            if (i < nb_joueurs) {
-                tour_equipe(equipe_joueur, &tous_combattants[i], equipe_ennemie, nb_ennemis);
-            } else {
-                printf("\n\033[1;37mTour de l'univers !\033[0m\n");
-
-                // Choix de la cible
-                int index_cible = 0;
-                if (niveau_univers == 0) { // Debutant
-                    do {
-                        index_cible = rand() % nb_joueurs;
-                    } while (equipe_j[index_cible].pv_actuels <= 0);
-                } else { // Facile et Normal 
-                    int min_pv = 1000000;
-                    for (int j = 0; j < nb_joueurs; j++) {
-                        // Ensemble bornée ]0;min_pv]
-                        if (equipe_j[j].pv_actuels > 0 && equipe_j[j].pv_actuels < min_pv) {
-                            min_pv = equipe_j[j].pv_actuels;
-                            index_cible = j;
-                        }
-                    }
-                }
-
-                // Choix de la compétence
-                int index_competence = 0;
-                if (niveau_univers == 2) { // Normal
-                    int nb = tous_combattants[i].nb_competences;
-                    if (nb > 2 && tous_combattants[i].recharge[2] == 0) {
-                        index_competence = 2;
-                    } else if (nb > 1 && tous_combattants[i].recharge[1] == 0) {
-                        index_competence = 1;
-                    } else {
-                        index_competence = 0;
-                    }
-                } else {
-                    index_competence = 0; // Debutant et Facile
-                }
-
-                effet_cible(&tous_combattants[i], &equipe_j[index_cible], index_competence);
-                mettre_a_jour_recharge(&tous_combattants[i]);
-                mettre_a_jour_effets(&tous_combattants[i]);
+        
+        if (tour == 0) { // Tour de l'équipe 1
+            // Trouver le prochain personnage vivant
+            while (index_equipe1 < nb_joueurs1 && equipe_j1[index_equipe1].pv_actuels <= 0) {
+                index_equipe1++;
             }
-
-            // Vérifier fin de partie
-            int joueurs_vivants = 0, ennemis_vivants = 0;
-            for (int j = 0; j < nb_joueurs; j++) if (equipe_j[j].pv_actuels > 0) joueurs_vivants++;
-            for (int j = 0; j < nb_ennemis; j++) if (equipe_ennemie[j].pv_actuels > 0) ennemis_vivants++;
-
-            if (joueurs_vivants == 0) {
-                printf("\n\033[1;31mL'equipe a perdu !\033[0m\n");
-                defaite();
-                continuer = 0;
-                break;
-            } else if (ennemis_vivants == 0) {
-                printf("\n\033[1;32mL'univers a perdu !\033[0m\n");
-                victoire();
-                continuer = 0;
-                break;
+            
+            if (index_equipe1 < nb_joueurs1) {
+                printf("\n\033[1;36mTour de %s (%s) !\033[0m\n", equipe1->nom, equipe_j1[index_equipe1].nom);
+                tour_equipe_joueur(equipe1, &equipe_j1[index_equipe1], equipe_j2, nb_joueurs2);
+                mettre_a_jour_recharge(&equipe_j1[index_equipe1]);
+                mettre_a_jour_effets(&equipe_j1[index_equipe1]);
+                index_equipe1++;
             }
-        }
-    }
-}
-
-void joueur_vs_joueur(Equipe *equipe1, Personnage *equipe_j1, int nb_joueurs1,
-                     Equipe *equipe2, Personnage *equipe_j2, int nb_joueurs2) {
-    Personnage tous_combattants[MAX_MEMBRES * 2];
-    int total_combattants = nb_joueurs1 + nb_joueurs2;
-
-    for (int i = 0; i < nb_joueurs1; i++) {
-        tous_combattants[i] = equipe_j1[i];
-        if (strlen(tous_combattants[i].nom) + strlen(" (e1)") < MAX_CARACTERES) {
-            strcat(tous_combattants[i].nom, " (e1)");
-        }
-    }
-    for (int i = 0; i < nb_joueurs2; i++) {
-        tous_combattants[nb_joueurs1 + i] = equipe_j2[i];
-        if (strlen(tous_combattants[nb_joueurs1 + i].nom) + strlen(" (e2)") < MAX_CARACTERES) {
-            strcat(tous_combattants[nb_joueurs1 + i].nom, " (e2)");
-        }
-    }
-
-    trier_vitesse(tous_combattants, total_combattants);
-
-    int continuer = 1;
-    while (continuer) {
-        for (int i = 0; i < total_combattants; i++) {
-            if (tous_combattants[i].pv_actuels <= 0) continue;
-
-            if (i < nb_joueurs1) {
-                tour_equipe(equipe1, &tous_combattants[i], equipe_j2, nb_joueurs2);
-            } else {
-                tour_equipe(equipe2, &tous_combattants[i], equipe_j1, nb_joueurs1);
+            tour = 1;
+        } else { // Tour de l'équipe 2
+            // Trouver le prochain personnage vivant
+            while (index_equipe2 < nb_joueurs2 && equipe_j2[index_equipe2].pv_actuels <= 0) {
+                index_equipe2++;
             }
-
-            // Verifier fin de partie
-            int equipe1_vivants = 0, equipe2_vivants = 0;
-            for (int j = 0; j < nb_joueurs1; j++) if (equipe_j1[j].pv_actuels > 0) equipe1_vivants++;
-            for (int j = 0; j < nb_joueurs2; j++) if (equipe_j2[j].pv_actuels > 0) equipe2_vivants++;
-
-            if (equipe1_vivants == 0) {
-                printf("\n\033[1;31mL'equipe 1 a perdu !\033[0m\n");
-                defaite();
-                printf("\n\033[1;32mL'equipe 2 a gagne !\033[0m\n");
-                victoire();
-                continuer = 0;
-                break;
-            } else if (equipe2_vivants == 0) {
-                printf("\n\033[1;31mL'equipe 2 a perdu !\033[0m\n");
-                defaite();
-                printf("\n\033[1;32mL'equipe 1 a gagne !\033[0m\n");
-                victoire();
-                continuer = 0;
-                break;
+            
+            if (index_equipe2 < nb_joueurs2) {
+                printf("\n\033[1;35mTour de %s (%s) !\033[0m\n", equipe2->nom, equipe_j2[index_equipe2].nom);
+                tour_equipe_joueur(equipe2, &equipe_j2[index_equipe2], equipe_j1, nb_joueurs1);
+                mettre_a_jour_recharge(&equipe_j2[index_equipe2]);
+                mettre_a_jour_effets(&equipe_j2[index_equipe2]);
+                index_equipe2++;
             }
+            tour = 0;
         }
+        
+        // Réinitialiser les index si nécessaire
+        if (index_equipe1 >= nb_joueurs1) index_equipe1 = 0;
+        if (index_equipe2 >= nb_joueurs2) index_equipe2 = 0;
+        
+        // Vérifier fin de partie
+        int equipe1_vivants = 0, equipe2_vivants = 0;
+        for (int j = 0; j < nb_joueurs1; j++) {
+            if (equipe_j1[j].pv_actuels > 0) equipe1_vivants++;
+        }
+        for (int j = 0; j < nb_joueurs2; j++) {
+            if (equipe_j2[j].pv_actuels > 0) equipe2_vivants++;
+        }
+
+        if (equipe1_vivants == 0) {
+            printf("\n\033[1;31m%s a ete vaincue !\033[0m\n", equipe1->nom);
+            defaite();
+            printf("\n\033[1;32m%s triomphe !\033[0m\n", equipe2->nom);
+            continuer = 0;
+        } else if (equipe2_vivants == 0) {
+            printf("\n\033[1;31m%s a ete vaincue !\033[0m\n", equipe2->nom);
+            defaite();
+            printf("\n\033[1;32m%s triomphe !\033[0m\n", equipe1->nom);
+            continuer = 0;
+        }
+        
+        attendre(2); // Pause pour lire les résultats
     }
 }
