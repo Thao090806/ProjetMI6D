@@ -224,10 +224,9 @@ void charger_competences(Personnage personnages[]) {
                     break;
                 }
 
-                personnages[index].competences[i] = creer_competence(nom, description, 
-                                                                   coefficient, tours_actifs, 
-                                                                   tours_recharge);
+                personnages[index].competences[i] = creer_competence(nom, description,coefficient, tours_actifs, tours_recharge);
                 personnages[index].nb_competences++;
+                personnages[index].competences[i].tours_recharge = 0;
             }
             index++;
         }
