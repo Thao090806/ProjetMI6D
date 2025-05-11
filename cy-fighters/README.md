@@ -24,7 +24,7 @@ Ce projet est un **jeu de combat au tour par tour**, où des équipes de personn
 ---
 
 ## 📁 **Arborescence et description des fichiers**
-
+```
 cy-fighters/
 ├── entetes/
 │ └── parametres.h # Contient toutes les différentes structures
@@ -49,8 +49,7 @@ cy-fighters/
 ├── jeu.c # 🧠 Point d’entrée principal, boucle principale du jeu
 ├── README.md # 📖 Documentation du projet
 ├── Makefile # 🛠️ Script de compilation automatisée
-
-
+```
 ---
 
 ## ✨ **Fonctionnalités disponibles**
