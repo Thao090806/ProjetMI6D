@@ -14,13 +14,16 @@
 
 void attendre(int secondes) {
     /*
-        * La fonction sleep() est utilisée pour suspendre l'exécution du programme pendant un certain nombre de secondes.
-        * Sur Windows, on utilise Sleep() qui prend des millisecondes comme argument.
-        * Sur les systèmes Unix, on utilise sleep() qui prend des secondes comme argument.
-        * On utilise la directive de préprocesseur _WIN32 pour déterminer le système d'exploitation
+    La fonction attendre() suspend l’exécution du programme pendant un certain nombre de secondes.
+    Elle prend en paramètre un entier représentant le nombre de secondes à attendre.
+    Selon le système d’exploitation, elle utilise Sleep() (Windows) ou sleep() (Unix) pour effectuer la pause.
     */
     if (secondes < 0) {
-        printf("\033[1;31mHmm ... C'est bien trop long.\n\033[0m");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
     #ifdef _WIN32
@@ -32,10 +35,9 @@ void attendre(int secondes) {
 
 void nettoyer() {
     /*
-        * La fonction system() est utilisée pour exécuter une commande système.
-        * Sur Windows, on utilise "cls" pour nettoyer l'écran.
-        * Sur les systèmes Unix, on utilise "clear" pour nettoyer l'écran.
-        * On utilise la directive de préprocesseur _WIN32 pour déterminer le système d'exploitation
+    La fonction nettoyer() efface l’écran de la console.
+    Elle ne prend aucun paramètre.
+    Elle utilise system("cls") sur Windows ou system("clear") sur Unix pour nettoyer l’affichage.
     */
     #ifdef _WIN32
         system("cls");
@@ -46,13 +48,16 @@ void nettoyer() {
 
 int afficher_personnages(Personnage personnages[], int nb_personnages) {
     /*
-        * La fonction afficher_personnages() affiche les personnages disponibles dans le jeu.
-        * Elle prend en paramètre un tableau de Personnage et le nombre de personnages.
-        * Si le tableau est vide ou si le nombre de personnages est inférieur ou égal à 0, elle affiche un message d'erreur et quitte le programme.
-        * Sinon, elle affiche les informations de chaque personnage (nom, PV, ATK, DEF, AGI, VIT) ainsi que leurs compétences.
+    La fonction afficher_personnages() affiche la liste des personnages disponibles dans le jeu.
+    Elle prend en paramètre un tableau de Personnage et le nombre de personnages à afficher.
+    Elle parcourt le tableau, affiche les caractéristiques et compétences de chaque personnage, puis retourne le nombre de personnages affichés.
     */
     if(personnages == NULL || nb_personnages <= 0) {
-        printf("Erreur : Aucun personnages");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
 
@@ -63,16 +68,19 @@ int afficher_personnages(Personnage personnages[], int nb_personnages) {
                personnages[i].pv_actuels, personnages[i].pv_max, 
                personnages[i].attaque, personnages[i].defense, 
                personnages[i].agilite, personnages[i].vitesse);
-
+        
         printf("  Competences ~");
         if (personnages[i].nb_competences == 0) {
             printf(" (Aucune)");
         } else {
             for (int j = 0; j < personnages[i].nb_competences; j++) {
                 if (personnages[i].competences[j].nom && strlen(personnages[i].competences[j].nom) > 0)
-                    printf(" (%s)", personnages[i].competences[j].nom);
+                    printf("\n (\033[1;33m%s\033[0m) ", personnages[i].competences[j].nom);
+                if ( personnages[i].competences[j].description && strlen(personnages[i].competences[j].description) > 0)
+                    printf("%s", personnages[i].competences[j].description);
             }
         }
+        
         printf("\n");
     }
 
@@ -86,7 +94,11 @@ int choisir_personnage(int nb_personnages) {
         * Sinon, elle demande à l'utilisateur de choisir un personnage et retourne l'index du personnage choisi.
     */
     if (nb_personnages <= 0) {
-        printf("\033[1;31mHmm ... Il n'y a pas de personnages.\n\033[0m");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
     return demander(nb_personnages);
@@ -100,17 +112,32 @@ void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[
         * Sinon, elle demande à l'utilisateur de choisir un nom pour son équipe et sélectionne les membres de l'équipe.
     */
     if (nb_personnages <= 0) {
-        printf("\033[1;31mHmm ... Il n'y a pas de personnages.\n\033[0m");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
-    printf("\033[0m\033[38;5;214m\033[3m\nQuel sera le nom de votre equipe ? \033[0m");
+    printf(
+        "\n"
+        "\n\033[1;33m"
+        "\033[38;5;81m"
+        "\033[3m"
+        "Quel sera le nom de votre equipe ? "
+        "\033[0m"
+    );
 
     char tmp[MAX_CARACTERES];
     scanf("%s", tmp);
 
     int n = strlen(tmp);
     if (n > MAX_CARACTERES) {
-        printf("\033[1;31mHmm ... C'est bien trop long.\n\033[0m");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
 
@@ -121,7 +148,11 @@ void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[
 
     int indices_selectionnes[MAX_MEMBRES] = {-1, -1, -1};
     for (int i = 0; i < MAX_MEMBRES; i++) {
-        printf("\n\033[1;40m~ %d sur %d\033[0m", i + 1, MAX_MEMBRES);
+        printf(
+            "\n\033[1;40m"
+            "~ %d sur %d"
+            "\033[0m", i + 1, MAX_MEMBRES
+        );
         int index_personnage = choisir_personnage(nb_personnages);
 
         int deja_selectionne = 0;
@@ -133,13 +164,21 @@ void choisir_equipe(Personnage personnages[], int nb_personnages, Equipe equipe[
         }
 
         if (deja_selectionne == 1) {
-            printf("\033[1;31m%s est deja sous vos ordres.\033[0m\n", personnages[index_personnage].nom);
+            printf(
+                "\033[1;31m"
+                "%s est deja sous vos ordres."
+                "\033[0m\n", personnages[index_personnage].nom
+            );
             i--;
         } else {
             indices_selectionnes[i] = index_personnage;
             (*equipe).membres[i] = personnages[index_personnage];
             (*equipe).nb_membres++;
-            printf("\033[1;39m%s pret au combat.\n\033[0m", personnages[index_personnage].nom);
+            printf(
+                "\033[1;39m"
+                "%s pret au combat."
+                "\n\033[0m", personnages[index_personnage].nom
+            );
         }
     }
 
@@ -158,7 +197,11 @@ void equipe_aleatoire(Personnage personnages[], int nb_personnages, Equipe equip
         * Sinon, elle sélectionne aléatoirement 3 membres pour l'équipe.
     */
     if (nb_personnages < MAX_MEMBRES) {
-        printf("\033[1;31mIl n'y a pas assez de combattants pour former une equipe !\033[0m\n");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
 
@@ -195,14 +238,22 @@ void afficher_equipe(Equipe equipe_joueur[], Equipe equipe_ennemi[]) {
     nettoyer();
 
     discours();
-
-    printf("\n\033[1;40m\033[1;31m%s, %s, %s VS %s, %s, %s\n\033[0m\n", 
+    printf(
+        "\033[1;40m"
+        "\"%s, %s, %s "
+        "\033[1;1m"
+        "~ contre ~"
+        "\033[0m"
+        "\033[1;40m"
+        " %s, %s, %s\""
+        "\n\033[0m\n", 
            equipe_joueur[0].membres[0].nom, 
            equipe_joueur[0].membres[1].nom, 
            equipe_joueur[0].membres[2].nom,
            equipe_ennemi[0].membres[0].nom, 
            equipe_ennemi[0].membres[1].nom, 
            equipe_ennemi[0].membres[2].nom);
+
 }
 
 void mode_univers(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_univers[]) {
@@ -212,20 +263,31 @@ void mode_univers(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_un
         * Elle permet au joueur de choisir son équipe et génère aléatoirement l'équipe de l'univers.
         * Ensuite, elle affiche les équipes et demande à l'utilisateur de choisir la difficulté de l'univers.
     */
-    printf("\n\033[1;39mFormez votre equipe.\033[0m");
-    choisir_equipe(entites, MAX_PERSONNAGES, &equipe_joueur[0]);
+    printf(
+        "\n\033[1;40m"
+        "Formez votre equipe."
+        "\033[0m"
 
+    );
+    choisir_equipe(entites, MAX_PERSONNAGES, &equipe_joueur[0]);
+    printf(
+        "\033[1;37m"
+        "Choisissez la difficulte de l'adversaire :\n"
+        "   0 ~ Debutant\n"
+        "   1 ~ Facile\n"
+        "   2 ~ Normal\n"
+        "\033[0m"
+    );
+    int difficulte = demander(3);
     chaudron();
-    printf("\033[1;39mL'univers forme son equipe.\033[0m\n");
+        printf(
+        "\033[1;40m"
+        "L'univers forme son equipe."
+        "\033[0m\n"
+    );
     equipe_aleatoire(entites, MAX_MEMBRES, equipe_univers);
 
     afficher_equipe(equipe_joueur, equipe_univers);
-
-    printf("\nChoisissez la difficulte de l'univers :\n");
-    printf("0 ~ Debutant\n");
-    printf("1 ~ Facile\n");
-    printf("2 ~ Normal\n");
-    int difficulte = demander(3);
 
     joueur_vs_univers(&equipe_joueur[0], equipe_joueur[0].membres, MAX_MEMBRES, equipe_univers[0].membres, MAX_MEMBRES, difficulte);
 }
@@ -236,10 +298,18 @@ void mode_versus(Personnage entites[], Equipe equipe1[], Equipe equipe2[]) {
         * Elle prend en paramètre un tableau de Personnage et deux structures Equipe pour les deux équipes.
         * Elle permet à chaque joueur de choisir son équipe et affiche les équipes.
     */
-    printf("\033[1;39mFormez l'equipe 1.\033[0m\n");
+    printf(
+        "\n\033[1;39m"
+        "Formez l'equipe 1."
+        "\033[0m"
+    );
     choisir_equipe(entites, MAX_PERSONNAGES, &equipe1[0]);
 
-    printf("\033[1;39mFormez l'equipe 2.\033[0m\n");
+    printf(
+        "\n\033[1;39m"
+        "Formez l'equipe 2."
+        "\033[0m"
+    );
     choisir_equipe(entites, MAX_PERSONNAGES, &equipe2[0]);
 
     afficher_equipe(equipe1, equipe2);
@@ -250,11 +320,12 @@ void mode_versus(Personnage entites[], Equipe equipe1[], Equipe equipe2[]) {
 
 void charger(Personnage entites[], Equipe equipe_joueur[], Equipe equipe_ennemi[], int mode) {
     /*
-        * La fonction charger() charge les personnages et les équipes à partir d'un fichier.
-        * Elle prend en paramètre un tableau de Personnage, deux structures Equipe pour le joueur et l'ennemi, et un mode de jeu.
-        * Elle affiche les personnages disponibles et demande à l'utilisateur de choisir son équipe.
-        * Ensuite, elle génère aléatoirement l'équipe ennemie et affiche les équipes.
+    La fonction charger() charge les personnages et les équipes à partir d'un fichier.
+    Elle prend en paramètre un tableau de Personnage, deux structures Equipe pour le joueur et l'ennemi, et un mode de jeu.
+    Elle affiche les personnages disponibles et demande à l'utilisateur de choisir son équipe.
+    Ensuite, elle génère aléatoirement l'équipe ennemie et affiche les équipes.
     */
+    nettoyer();
     int nb_personnages = afficher_personnages(entites, MAX_PERSONNAGES);
 
     if (mode == 0) {

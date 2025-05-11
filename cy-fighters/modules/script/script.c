@@ -31,20 +31,18 @@ void histoire() {
         "               surmonter des adversaires redoutables.\n"
         "               L'arene vous attend. Preparez-vous a ecrire votre legende dans le feu\n"
         "               et le sang. Serez-vous a la hauteur ?\n"
-        "\033[1;31m"
-        "               Le destin repose entre vos mains...\n"
         "\033[0m"
     );
 }
 
 void mode_jeu() {
-    printf("\n\n\033[1;33m"
-        "L'univers vous guide...\n"
-        "Choisissez votre voie et preparez-vous a entrer dans l'arene :\n"
+    printf(
+        "\n\033[1;37m"
+        "L'univers vous guide, le destin repose entre vos mains.\n\n"
         "\033[0m"
         "\033[1;37m"
-        "0 ~ Vous et votre equipe contre des adversaires guides par l'univers.\n"
-        "1 ~ Affrontez un autre joueur dans une bataille strategique.\n"
+        "   0 ~ Vous et votre equipe contre des adversaires guides par l'univers.\n"
+        "   1 ~ Affrontez un autre joueur dans une bataille strategique.\n"
         "\033[0m"
     );
 }

@@ -5,18 +5,9 @@
 
 Personnage creer_personnage(char *nom, char *description, int pv_max, int attaque, int defense, int agilite, int vitesse) {
     /*
-        * Fonction pour creer un personnage avec les parametres fournis.
-        * Les parametres doivent etre valides, sinon la fonction affiche une erreur et quitte le programme.
-        * 
-        * nom : Nom du personnage
-        * description : Description du personnage
-        * pv_max : Points de vie maximum
-        * attaque : Points d'attaque
-        * defense : Points de defense
-        * agilite : Points d'agilite
-        * vitesse : Points de vitesse
-        *
-        * Retourne un objet Personnage initialise.
+    La fonction creer_personnage() crée un personnage avec les paramètres fournis.
+    Elle prend en paramètre le nom, la description, les points de vie, l’attaque, la défense, l’agilité et la vitesse du personnage.
+    Elle vérifie la validité des paramètres, initialise les champs du personnage, met les compétences en disponible, puis retourne le personnage créé.
     */
     if(nom == NULL || description == NULL || pv_max <= 0 || attaque < 0 || defense < 0 || agilite < 0 || vitesse < 0) {
         fprintf(stderr, "Erreur : Parametres invalides pour le personnage.\n");
@@ -44,16 +35,9 @@ Personnage creer_personnage(char *nom, char *description, int pv_max, int attaqu
 
 Competence creer_competence(char *nom, char *description, int coefficient, int tours_actifs, int tours_recharge) {
     /*
-        * Fonction pour creer une competence avec les parametres fournis.
-        * Les parametres doivent etre valides, sinon la fonction affiche une erreur et quitte le programme.
-        * 
-        * nom : Nom de la competence
-        * description : Description de la competence
-        * coefficient : Coefficient de la competence
-        * tours_actifs : Tours d'activation de la competence
-        * tours_recharge : Tours de recharge de la competence
-        *
-        * Retourne un objet Competence initialise.
+    La fonction creer_competence() crée une compétence avec les paramètres fournis.
+    Elle prend en paramètre le nom, la description, le coefficient, le nombre de tours actifs et le nombre de tours de recharge.
+    Elle vérifie la validité des paramètres, initialise les champs de la compétence, puis retourne la compétence créée.
     */
     if(nom == NULL || description == NULL || coefficient < 0 || tours_actifs < 0 || tours_recharge < 0) {
         fprintf(stderr, "Erreur : Parametres invalides pour la competence.\n");
@@ -72,12 +56,9 @@ Competence creer_competence(char *nom, char *description, int coefficient, int t
 
 void charger_personnages(Personnage personnages[]) {
     /*
-        * Fonction pour charger les personnages depuis un fichier texte.
-        * Le fichier doit etre formate correctement, sinon la fonction affiche une erreur et quitte le programme.
-        * 
-        * personnages : Tableau de personnages a remplir
-        *
-        * Retourne rien.
+    La fonction charger_personnages() charge les personnages depuis un fichier texte.
+    Elle prend en paramètre un tableau de Personnage.
+    Elle ouvre le fichier, lit chaque bloc de personnage, extrait les informations, crée les personnages et les ajoute au tableau.
     */
     if(personnages == NULL) {
         fprintf(stderr, "Erreur : Tableau de personnages null.\n");
@@ -158,12 +139,9 @@ void charger_personnages(Personnage personnages[]) {
 
 void charger_competences(Personnage personnages[]) {
     /*
-        * Fonction pour charger les competences depuis un fichier texte.
-        * Le fichier doit etre formate correctement, sinon la fonction affiche une erreur et quitte le programme.
-        * 
-        * personnages : Tableau de personnages a remplir
-        *
-        * Retourne rien.
+    La fonction charger_competences() charge les compétences des personnages depuis un fichier texte.
+    Elle prend en paramètre un tableau de Personnage.
+    Elle ouvre le fichier, lit les blocs de compétences pour chaque personnage, extrait les informations, crée les compétences et les ajoute au bon personnage.
     */
     if(personnages == NULL) {
         fprintf(stderr, "Erreur : Tableau de personnages null.\n");
@@ -247,15 +225,16 @@ void charger_competences(Personnage personnages[]) {
 
 void initialiser(Personnage entites[]) {
     /*
-        * Fonction pour initialiser le jeu.
-        * Charge les personnages et les competences depuis les fichiers.
-        * 
-        * entites : Tableau de personnages a remplir
-        *
-        * Retourne rien.
+    La fonction initialiser() initialise le jeu en chargeant les personnages et les compétences.
+    Elle prend en paramètre un tableau de Personnage.
+    Elle vérifie si le tableau de personnages est valide, puis appelle les fonctions de chargement des personnages et des compétences.
     */
     if(entites == NULL) {
-        fprintf(stderr, "Erreur : Tableau de personnages null.\n");
+        printf(
+            "\033[1;31m"
+            "Erreur : Parametres hors de portee."
+            "\n\033[0m"
+        );
         exit(1);
     }
     charger_personnages(entites);
