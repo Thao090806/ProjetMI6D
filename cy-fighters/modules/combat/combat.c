@@ -418,7 +418,13 @@ void effet_cible(Personnage *attaquant, Personnage *cible, int index_competence)
         printf("\033[1;37m%s inflige des degats de zone !\033[0m\n", attaquant->nom);
     }
 
-    attaquant->recharge[index_competence] = competence.tours_recharge;
+    if (competence.tours_recharge > 0) {
+        // Si la compétence a un temps de recharge, on l'applique
+        attaquant->recharge[index_competence] = competence.tours_recharge;
+    } else {
+        // Sinon on s'assure qu'elle reste à 0
+        attaquant->recharge[index_competence] = 0;
+    }
 }
 
 void tour_equipe_joueur(Equipe *equipe, Personnage *attaquant, Personnage equipe_ennemie[], int nb_ennemis) {

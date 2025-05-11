@@ -35,6 +35,10 @@ Personnage creer_personnage(char *nom, char *description, int pv_max, int attaqu
     personnage.nb_competences = 0;
     personnage.nb_effets = 0;
 
+    for (int i = 0; i < MAX_COMPETENCES; i++) {
+        personnage.recharge[i] = 0;  // Toutes compétences disponibles au départ
+    }
+
     return personnage;
 }
 
@@ -224,9 +228,14 @@ void charger_competences(Personnage personnages[]) {
                     break;
                 }
 
-                personnages[index].competences[i] = creer_competence(nom, description,coefficient, tours_actifs, tours_recharge);
-                personnages[index].nb_competences++;
-                personnages[index].competences[i].tours_recharge = 0;
+                personnages[index].competences[i] = creer_competence(nom, description, 
+                                                                coefficient, tours_actifs, 
+                                                                tours_recharge);
+                                                                
+                personnages[index].recharge[i] = 0;  // Met à 0 car la compétence est disponible au départ
+
+                personnages[index].nb_competences++;  // Incrémente le compteur
+                
             }
             index++;
         }
